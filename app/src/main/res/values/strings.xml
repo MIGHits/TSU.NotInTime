@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TSU.NotInTime</string>
+    <string name="greetings">Добро Пожаловать</string>
+    <string name="app_tittle">TSU.NotInTime</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="Enter">Войти</string>
 </resources>
