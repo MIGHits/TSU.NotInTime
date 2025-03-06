@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">TSU.NotInTime</string>
+    <string name="greetings">Добро Пожаловать</string>
+    <string name="app_tittle">TSU.NotInTime</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="Enter">Войти</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="without_account">Еще нет аккаунта?</string>
+    <string name="Register_label">Зарегистрироваться</string>
+    <string name="Login_header">Войдите,чтобы продолжить</string>
 </resources>
