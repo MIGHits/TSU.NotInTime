@@ -16,4 +16,9 @@
     <string name="has_account">Уже есть аккаунт?</string>
     <string name="register_top_header">Регистрация</string>
     <string name="make_account">Создайте аккаунт</string>
+    <string name="minimal_password_length">Минимальная длина пароля 8</string>
+    <string name="password_digit_rule">Пароль должен содержать цифры</string>
+    <string name="wrong_email">Неверный email</string>
+    <string name="wrong_value">Недопустимое значение</string>
+    <string name="fail_password_confirm">Пароли не совпадают</string>
 </resources>
