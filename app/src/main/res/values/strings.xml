@@ -9,4 +9,11 @@
     <string name="without_account">Еще нет аккаунта?</string>
     <string name="Register_label">Зарегистрироваться</string>
     <string name="Login_header">Войдите,чтобы продолжить</string>
+    <string name="name_input_field">Имя</string>
+    <string name="last_name_input_field">Фамилия</string>
+    <string name="middle_name_input_field">Oтчество(необязательно)</string>
+    <string name="password_confirmation">Подтвердите пароль</string>
+    <string name="has_account">Уже есть аккаунт?</string>
+    <string name="register_top_header">Регистрация</string>
+    <string name="make_account">Создайте аккаунт</string>
 </resources>

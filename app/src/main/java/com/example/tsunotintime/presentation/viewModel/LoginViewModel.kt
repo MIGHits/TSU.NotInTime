@@ -63,6 +63,8 @@ class LoginViewModel : ViewModel() {
                                         _state.value.password.isValid
                             )
                     }
+
+                    else -> {}
                 }
             }
 
@@ -92,6 +94,8 @@ class LoginViewModel : ViewModel() {
                     ), "Неправильный пароль"
                 )
             }
+
+            else -> ValidationResult(true, null)
         }
     }
 }

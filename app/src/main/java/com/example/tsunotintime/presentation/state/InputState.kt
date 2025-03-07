@@ -4,7 +4,11 @@ import androidx.compose.ui.graphics.Color
 
 enum class InputType {
     EMAIL,
-    PASSWORD
+    PASSWORD,
+    PASSWORD_CONFIRMATION,
+    NAME,
+    LAST_NAME,
+    MIDDLE_NAME
 }
 
 data class InputState(
