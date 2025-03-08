@@ -7,5 +7,5 @@ data class RegisterCredentialsState(
     val email: InputState = InputState(type = InputType.EMAIL),
     val password: InputState = InputState(type = InputType.PASSWORD),
     val passwordConfirmation: InputState = InputState(type = InputType.PASSWORD_CONFIRMATION),
-    val isValid: Boolean
+    val isValid: Boolean,
 )

@@ -21,4 +21,5 @@
     <string name="wrong_email">Неверный email</string>
     <string name="wrong_value">Недопустимое значение</string>
     <string name="fail_password_confirm">Пароли не совпадают</string>
+    <string name="authorization">Авторизация</string>
 </resources>

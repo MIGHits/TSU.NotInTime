@@ -9,7 +9,7 @@ import com.example.tsunotintime.presentation.state.ValidationResult
 class ValidationRepositoryImpl : ValidationRepository {
     override fun validatePassword(password: String): ValidationResult {
         if (password.length <= 7) {
-            ValidationResult(
+            return ValidationResult(
                 result = false,
                 errorMessage = instance.getString(R.string.minimal_password_length)
             )
@@ -37,8 +37,8 @@ class ValidationRepositoryImpl : ValidationRepository {
         )
     }
 
-    override fun validateInput(inputValue: String): ValidationResult {
-        if (inputValue.isEmpty() || !inputValue.contains(Regex("^[a-zA-Z-]*\$"))) {
+    override fun validateInput(inputValue: String, required: Boolean): ValidationResult {
+        if (inputValue.isEmpty() && required || !inputValue.contains(Regex("^[a-zA-Zа-яА-Я-]*\$"))) {
             return ValidationResult(
                 result = false,
                 errorMessage = instance.getString(R.string.wrong_value)

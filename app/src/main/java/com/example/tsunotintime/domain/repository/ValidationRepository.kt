@@ -6,6 +6,6 @@ import com.example.tsunotintime.presentation.state.ValidationResult
 interface ValidationRepository {
     fun validatePassword(password: String): ValidationResult
     fun validateEmail(email: String): ValidationResult
-    fun validateInput(inputValue: String): ValidationResult
+    fun validateInput(inputValue: String,required:Boolean): ValidationResult
     fun validatePasswordConfirmation(password: String, passwordConfirmation: String):ValidationResult
 }

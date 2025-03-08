@@ -4,18 +4,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +22,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +49,11 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 
 
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel) {
+fun LoginScreen(
+    loginViewModel: LoginViewModel,
+    back: () -> Unit,
+    toRegistration: () -> Unit
+) {
     val loginFormState = loginViewModel.state.value
     val scrollState = rememberScrollState()
 
@@ -58,27 +62,42 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
             .fillMaxSize()
             .background(color = SecondaryColor)
     ) {
-        IconButton(
-            onClick = {},
+        Row(
             modifier = Modifier
-                .padding(start = 24.dp, top = 36.dp)
+                .fillMaxWidth()
+                .padding(start = 12.dp, top = 12.dp)
                 .align(Alignment.TopStart)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.back_icon),
-                contentDescription = null,
-                modifier = Modifier.wrapContentSize(),
-                tint = Color.DarkGray
+            IconButton(
+                onClick = { back() },
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.back_icon),
+                    contentDescription = null,
+                    modifier = Modifier.wrapContentSize(),
+                    tint = Color.DarkGray
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.authorization),
+                color = PrimaryColor,
+                fontSize = 20.sp,
+                lineHeight = 48.sp,
+                fontFamily = Nunito,
+                fontWeight = FontWeight.Black
             )
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            Modifier
+                .fillMaxSize()
+                .padding(top = 80.dp)
                 .verticalScroll(scrollState)
                 .imePadding()
                 .navigationBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(R.drawable.login_art),
@@ -106,12 +125,11 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
                     loginViewModel.createEvent(LoginEvent.EnteredEmail(text))
                     loginViewModel.createEvent(LoginEvent.FormChange(InputType.EMAIL))
                 },
-                hasError = !loginFormState.email.isValid,
+                hasError = !loginFormState.email.isValid && !loginFormState.email.isInitialState,
                 errorMessage = loginFormState.email.errorMessage,
                 isPasswordField = false,
                 labelIcon = R.drawable.mail_icon
             )
-            Spacer(modifier = Modifier.size(10.dp))
             CustomInputField(
                 value = loginFormState.password.text,
                 placeholder = stringResource(R.string.password),
@@ -124,7 +142,7 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
                     loginViewModel.createEvent(LoginEvent.EnteredPassword(text))
                     loginViewModel.createEvent(LoginEvent.FormChange(InputType.PASSWORD))
                 },
-                hasError = !loginFormState.password.isValid,
+                hasError = !loginFormState.password.isValid && !loginFormState.password.isInitialState,
                 errorMessage = loginFormState.password.errorMessage,
                 isPasswordField = true,
                 labelIcon = R.drawable.password_icon
@@ -148,7 +166,7 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
                 Spacer(modifier = Modifier.width(5.dp))
                 ClickableText(
                     text = AnnotatedString(stringResource(R.string.Register_label)),
-                    onClick = {},
+                    onClick = { toRegistration() },
                     style = TextStyle(
                         color = SecondaryButton,
                         fontSize = 14.sp,
