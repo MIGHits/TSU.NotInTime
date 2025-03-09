@@ -90,9 +90,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 80.dp)
-                .verticalScroll(scrollState)
-                .imePadding()
-                .navigationBarsPadding(),
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(

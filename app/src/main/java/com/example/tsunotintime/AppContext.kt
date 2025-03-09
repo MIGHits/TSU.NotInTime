@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.tsunotintime.di.appModule
 import com.example.tsunotintime.di.dataModule
 import com.example.tsunotintime.di.domainModule
+import com.example.tsunotintime.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -18,7 +19,7 @@ class AppContext : Application() {
         instance = this
         startKoin {
             androidContext(this@AppContext)
-            modules(appModule, dataModule, domainModule)
+            modules(appModule, dataModule, domainModule, networkModule)
         }
     }
 }
