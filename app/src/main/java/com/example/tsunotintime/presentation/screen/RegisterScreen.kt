@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
+import com.example.tsunotintime.presentation.components.LoadingIndicator
+import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.RegisterEvent
 import com.example.tsunotintime.presentation.viewModel.RegisterViewModel
@@ -45,6 +47,21 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 
 @Composable
 fun RegisterScreen(
+    registerViewModel: RegisterViewModel,
+    back: () -> Unit,
+    toLogin: () -> Unit
+) {
+    val screenState = registerViewModel.screenState.value.currentState
+    when (screenState) {
+        is FetchDataState.Initial -> RegistrationForm(registerViewModel, back, toLogin)
+        is FetchDataState.Error -> {}
+        FetchDataState.Loading -> LoadingIndicator()
+        FetchDataState.Success -> {}
+    }
+}
+
+@Composable
+fun RegistrationForm(
     registerViewModel: RegisterViewModel,
     back: () -> Unit,
     toLogin: () -> Unit
@@ -185,7 +202,7 @@ fun RegisterScreen(
                 buttonText = stringResource(R.string.Register_label),
                 modifier = Modifier.fillMaxWidth(0.8f),
                 isEnabled = registerFormState.isValid,
-                onClick = {}
+                onClick = {registerViewModel.createEvent(RegisterEvent.ButtonClick)}
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

@@ -9,7 +9,8 @@ val appModule = module {
     viewModel<LoginViewModel> {
         LoginViewModel(
             emailValidationUseCase = get(),
-            passwordValidationUseCase = get()
+            passwordValidationUseCase = get(),
+            loginUseCase = get()
         )
     }
     viewModel<RegisterViewModel> {
@@ -17,7 +18,9 @@ val appModule = module {
             emailUseCase = get(),
             passwordUseCase = get(),
             confirmPasswordUseCase = get(),
-            registrationFieldUseCase = get()
+            registrationFieldUseCase = get(),
+            registerUseCase = get(),
+            logoutUseCase = get()
         )
     }
 }

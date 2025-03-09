@@ -8,5 +8,5 @@ sealed class RegisterEvent {
     data class EnteredPasswordConfirmation(val value: String) : RegisterEvent()
     data class EnteredPassword(val value: String) : RegisterEvent()
     data class FormChange(val focusField: InputType) : RegisterEvent()
-    data class ButtonClick(val value: Boolean) : RegisterEvent()
+    data object ButtonClick : RegisterEvent()
 }

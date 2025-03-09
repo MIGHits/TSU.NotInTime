@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
+import com.example.tsunotintime.presentation.components.LoadingIndicator
+import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.LoginEvent
 import com.example.tsunotintime.presentation.viewModel.LoginViewModel
@@ -60,8 +62,24 @@ fun LoginScreen(
     back: () -> Unit,
     toRegistration: () -> Unit
 ) {
-    val loginFormState = loginViewModel.state.value
+    val dataState = loginViewModel.screenState.value.currentState
+
+    when (dataState) {
+        is FetchDataState.Initial -> LoginForm(back, toRegistration, loginViewModel)
+        is FetchDataState.Error -> {}
+        FetchDataState.Loading -> LoadingIndicator()
+        FetchDataState.Success -> {}
+    }
+}
+
+@Composable
+fun LoginForm(
+    back: () -> Unit,
+    toRegistration: () -> Unit,
+    loginViewModel: LoginViewModel
+) {
     val scrollState = rememberScrollState()
+    val loginFormState = loginViewModel.state.value
 
     Box(
         modifier = Modifier
@@ -156,7 +174,7 @@ fun LoginScreen(
                 buttonText = stringResource(R.string.Enter),
                 modifier = Modifier.fillMaxWidth(0.8f),
                 isEnabled = loginFormState.isValid,
-                onClick = {}
+                onClick = {loginViewModel.createEvent(LoginEvent.ButtonClick)}
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
