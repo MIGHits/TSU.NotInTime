@@ -12,14 +12,14 @@ object PrivateTokenStorage : TokenStorage {
     private val context = instance
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+    private val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
     override fun getAccessToken(): String {
         return sharedPreferences.getString(ACCESS_TOKEN_KEY, EMPTY_RESULT).toString()
     }
 
     override fun saveAccessToken(token: String) {
-        editor.putString(ACCESS_TOKEN_KEY, token)
+        editor.putString(ACCESS_TOKEN_KEY, token).apply()
     }
 
     override fun getRefreshToken(): String {
@@ -27,7 +27,7 @@ object PrivateTokenStorage : TokenStorage {
     }
 
     override fun saveRefreshToken(token: String) {
-        editor.putString(REFRESH_TOKEN_KEY, token)
+        editor.putString(REFRESH_TOKEN_KEY, token).apply()
     }
 
     override fun removeToken() {

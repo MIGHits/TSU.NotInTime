@@ -3,21 +3,37 @@ package com.example.tsunotintime.presentation.viewModel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tsunotintime.common.Constant.EMPTY_RESULT
+import com.example.tsunotintime.domain.entity.ErrorEntity
+import com.example.tsunotintime.domain.entity.LoginCredentialsModel
+import com.example.tsunotintime.domain.entity.Result
+import com.example.tsunotintime.domain.entity.UserRegisterModel
 import com.example.tsunotintime.domain.usecase.ConfirmPasswordUseCase
+import com.example.tsunotintime.domain.usecase.LogoutUseCase
+import com.example.tsunotintime.domain.usecase.RegisterUseCase
 import com.example.tsunotintime.domain.usecase.ValidateEmailUseCase
 import com.example.tsunotintime.domain.usecase.ValidatePasswordUseCase
 import com.example.tsunotintime.domain.usecase.ValidateRegistrationFieldUseCase
+import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.RegisterCredentialsState
 import com.example.tsunotintime.presentation.state.RegisterEvent
+import com.example.tsunotintime.presentation.state.ScreenState
 import com.example.tsunotintime.presentation.state.ValidationResult
+import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     private val emailUseCase: ValidateEmailUseCase,
     private val passwordUseCase: ValidatePasswordUseCase,
     private val confirmPasswordUseCase: ConfirmPasswordUseCase,
-    private val registrationFieldUseCase: ValidateRegistrationFieldUseCase
+    private val registrationFieldUseCase: ValidateRegistrationFieldUseCase,
+    private val registerUseCase: RegisterUseCase,
+    private val logoutUseCase:LogoutUseCase
 ) : ViewModel() {
+
+    private val _screenState = mutableStateOf(ScreenState(currentState = FetchDataState.Initial))
+    val screenState: State<ScreenState> = _screenState
 
     private val _state =
         mutableStateOf(RegisterCredentialsState(isValid = false))
@@ -61,11 +77,99 @@ class RegisterViewModel(
                 )
             }
 
-            is RegisterEvent.ButtonClick -> {}
+            is RegisterEvent.ButtonClick -> {
+                //register()
+                logout()
+            }
+
             is RegisterEvent.FormChange -> handleFormChange(event.focusField)
         }
     }
 
+    private fun register() {
+        _screenState.value = _screenState.value.copy(currentState = FetchDataState.Loading)
+        viewModelScope.launch {
+            val response = registerUseCase(
+                UserRegisterModel(
+                    firstName = _state.value.name.text,
+                    lastName = _state.value.lastName.text,
+                    middleName = _state.value.middleName.text,
+                    email = _state.value.email.text,
+                    password = _state.value.password.text
+                )
+            )
+            when (response) {
+                is Result.Success -> {
+                    _screenState.value =
+                        _screenState.value.copy(currentState = FetchDataState.Success)
+                }
+
+                is Result.Error -> {
+                    var errorMessage = EMPTY_RESULT
+
+                    when (response.error) {
+                        is ErrorEntity.Network -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.AccessDenied -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.BadRequest -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.NotFound -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.ServiceUnavailable -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.Unknown -> errorMessage =
+                            response.error.errorMessage.toString()
+                    }
+                    _screenState.value =
+                        _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
+                }
+            }
+        }
+    }
+    private fun logout() {
+        _screenState.value = _screenState.value.copy(currentState = FetchDataState.Loading)
+        viewModelScope.launch {
+            val response = logoutUseCase()
+            when (response) {
+                is Result.Success -> {
+                    _screenState.value =
+                        _screenState.value.copy(currentState = FetchDataState.Success)
+                }
+
+                is Result.Error -> {
+                    var errorMessage = EMPTY_RESULT
+
+                    when (response.error) {
+                        is ErrorEntity.Network -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.AccessDenied -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.BadRequest -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.NotFound -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.ServiceUnavailable -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.Unknown -> errorMessage =
+                            response.error.errorMessage.toString()
+                    }
+                    _screenState.value =
+                        _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
+                }
+            }
+        }
+    }
     private fun handleFormChange(focusField: InputType) {
 
         when (focusField) {

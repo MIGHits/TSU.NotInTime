@@ -70,18 +70,22 @@ class MainActivity : ComponentActivity() {
                         .consumeWindowInsets(PaddingValues())
                         .imePadding()
                 ) { innerPadding ->
-                    NavigationScreen(
+                    ProfileScreen()
+                   /* NavigationScreen(
                         modifier = Modifier
                             .padding(innerPadding)
                             .background(color = SecondaryColor), navController = navController
-                    )
+                    )*/
                 }
             }
         }
     }
 }
 
+@Composable
+fun ProfileScreen(){
 
+}
 
 
 
