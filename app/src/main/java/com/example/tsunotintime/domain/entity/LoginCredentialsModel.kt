@@ -1,4 +1,4 @@
-package com.example.tsunotintime.data.models
+package com.example.tsunotintime.domain.entity
 
 data class LoginCredentialsModel(
     val email: String,

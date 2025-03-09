@@ -9,4 +9,17 @@
     <string name="without_account">Еще нет аккаунта?</string>
     <string name="Register_label">Зарегистрироваться</string>
     <string name="Login_header">Войдите,чтобы продолжить</string>
+    <string name="name_input_field">Имя</string>
+    <string name="last_name_input_field">Фамилия</string>
+    <string name="middle_name_input_field">Oтчество(необязательно)</string>
+    <string name="password_confirmation">Подтвердите пароль</string>
+    <string name="has_account">Уже есть аккаунт?</string>
+    <string name="register_top_header">Регистрация</string>
+    <string name="make_account">Создайте аккаунт</string>
+    <string name="minimal_password_length">Минимальная длина пароля 8</string>
+    <string name="password_digit_rule">Пароль должен содержать цифры</string>
+    <string name="wrong_email">Неверный email</string>
+    <string name="wrong_value">Недопустимое значение</string>
+    <string name="fail_password_confirm">Пароли не совпадают</string>
+    <string name="authorization">Авторизация</string>
 </resources>

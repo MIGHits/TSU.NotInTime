@@ -33,7 +33,7 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(toLogin: () -> Unit, toRegistration: () -> Unit) {
     val systemUiController = rememberSystemUiController()
 
     LaunchedEffect(systemUiController) {
@@ -88,8 +88,18 @@ fun WelcomeScreen() {
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
-            AuthButton(stringResource(R.string.register), isEnabled = true, onClick = {})
-            AuthButton(stringResource(R.string.Enter), isEnabled = true, onClick = {})
+            AuthButton(
+                stringResource(R.string.register),
+                isEnabled = true,
+                onClick = { toRegistration() }, modifier = Modifier.fillMaxWidth(0.7f)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AuthButton(
+                stringResource(R.string.Enter),
+                isEnabled = true,
+                onClick = { toLogin() },
+                modifier = Modifier.fillMaxWidth(0.7f)
+            )
         }
     }
 }

@@ -1,16 +1,19 @@
 package com.example.tsunotintime.presentation.viewModel
 
-import android.text.TextUtils
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import com.example.tsunotintime.domain.usecase.ValidateEmailUseCase
+import com.example.tsunotintime.domain.usecase.ValidatePasswordUseCase
 import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.LoginCredentialsState
 import com.example.tsunotintime.presentation.state.LoginEvent
 import com.example.tsunotintime.presentation.state.ValidationResult
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val emailValidationUseCase: ValidateEmailUseCase,
+    private val passwordValidationUseCase: ValidatePasswordUseCase
+) : ViewModel() {
     private val _state = mutableStateOf(LoginCredentialsState(isValid = false))
     val state: State<LoginCredentialsState> = _state
 
@@ -37,6 +40,7 @@ class LoginViewModel : ViewModel() {
             }
 
             is LoginEvent.FormChange -> {
+
                 when (event.focusField) {
                     InputType.EMAIL -> {
                         val emailValid = validateInput(state.value.email.text, InputType.EMAIL)
@@ -44,6 +48,7 @@ class LoginViewModel : ViewModel() {
                             email = state.value.email.copy(
                                 isValid = emailValid.result,
                                 errorMessage = emailValid.errorMessage,
+                                isInitialState = false
                             ),
                         )
                     }
@@ -54,16 +59,18 @@ class LoginViewModel : ViewModel() {
                         _state.value = state.value.copy(
                             password = state.value.password.copy(
                                 isValid = passwordValid.result,
-                                errorMessage = passwordValid.errorMessage
+                                errorMessage = passwordValid.errorMessage,
+                                isInitialState = false
                             ),
                         )
-                        _state.value =
-                            _state.value.copy(
-                                isValid = _state.value.email.isValid &&
-                                        _state.value.password.isValid
-                            )
                     }
+
+                    else -> {}
                 }
+                _state.value =
+                    _state.value.copy(
+                        isValid = validateForm()
+                    )
             }
 
             is LoginEvent.ButtonClick -> {
@@ -72,26 +79,23 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    private fun validateForm(): Boolean {
+        return _state.value.email.isValid &&
+                _state.value.password.isValid
+    }
+
 
     private fun validateInput(inputValue: String, inputType: InputType): ValidationResult {
         return when (inputType) {
             InputType.EMAIL -> {
-                ValidationResult(
-                    !TextUtils.isEmpty(inputValue) && android.util.Patterns.EMAIL_ADDRESS.matcher(
-                        inputValue
-                    ).matches(), "Неправильный email"
-                )
+                emailValidationUseCase(inputValue)
             }
 
             InputType.PASSWORD -> {
-                ValidationResult(
-                    !TextUtils.isEmpty(inputValue) && inputValue.length > 7 && inputValue.contains(
-                        Regex(
-                            "^(?=.*\\d).+\$"
-                        )
-                    ), "Неправильный пароль"
-                )
+                passwordValidationUseCase(inputValue)
             }
+
+            else -> ValidationResult(true, null)
         }
     }
 }

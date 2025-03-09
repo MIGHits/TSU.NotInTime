@@ -1,8 +1,5 @@
 package com.example.tsunotintime.presentation.components
 
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,11 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.ui.theme.Nunito
-import com.example.tsunotintime.ui.theme.PrimaryColor
 import com.example.tsunotintime.ui.theme.SecondaryButton
-import com.example.tsunotintime.ui.theme.SecondaryColor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomInputField(
     value: String,
@@ -115,7 +108,7 @@ fun CustomInputField(
                     )
                 )
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 errorBorderColor = errorColor,
                 errorLabelColor = errorColor,
                 errorLeadingIconColor = errorColor,

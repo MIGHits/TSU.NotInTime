@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -50,16 +51,26 @@ android {
 }
 
 dependencies {
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlin.jwt)
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.koin.core)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(platform(libs.koin.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.insert.koin.koin.core)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
