@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
+import com.example.tsunotintime.presentation.components.ErrorComponent
 import com.example.tsunotintime.presentation.components.LoadingIndicator
 import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
@@ -60,15 +61,14 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 fun LoginScreen(
     loginViewModel: LoginViewModel,
     back: () -> Unit,
-    toRegistration: () -> Unit
+    toRegistration: () -> Unit,
+    onSuccess: () -> Unit
 ) {
-    val dataState = loginViewModel.screenState.value.currentState
-
-    when (dataState) {
+    when (val dataState = loginViewModel.screenState.value.currentState) {
         is FetchDataState.Initial -> LoginForm(back, toRegistration, loginViewModel)
-        is FetchDataState.Error -> {}
+        is FetchDataState.Error -> { ErrorComponent(dataState.message,{})}
         FetchDataState.Loading -> LoadingIndicator()
-        FetchDataState.Success -> {}
+        FetchDataState.Success -> {onSuccess()}
     }
 }
 
@@ -174,7 +174,7 @@ fun LoginForm(
                 buttonText = stringResource(R.string.Enter),
                 modifier = Modifier.fillMaxWidth(0.8f),
                 isEnabled = loginFormState.isValid,
-                onClick = {loginViewModel.createEvent(LoginEvent.ButtonClick)}
+                onClick = { loginViewModel.createEvent(LoginEvent.ButtonClick) }
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

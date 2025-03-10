@@ -22,4 +22,16 @@
     <string name="wrong_value">Недопустимое значение</string>
     <string name="fail_password_confirm">Пароли не совпадают</string>
     <string name="authorization">Авторизация</string>
+    <string name="bottom_sheet_dialog_header">Хотите изменить пароль?</string>
+    <string name="save">Сохранить</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="student">Студент</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="middle_name">Отчество</string>
+    <string name="email_field">Email</string>
+    <string name="status">Статус</string>
+    <string name="wrong_message">Что-то пошло не так</string>
+    <string name="retry">Попробовать снова</string>
 </resources>

@@ -1,4 +1,6 @@
-package com.example.tsunotintime.data.models
+package com.example.tsunotintime.domain.entity
+
+import com.example.tsunotintime.data.models.UserType
 
 data class UserModel(
     val id: String,

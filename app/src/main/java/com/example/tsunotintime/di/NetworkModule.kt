@@ -2,9 +2,8 @@ package com.example.tsunotintime.di
 
 import com.example.tsunotintime.common.MyClient
 import com.example.tsunotintime.common.URL.BASE_URL
-import com.example.tsunotintime.data.remote.AuthService
+import com.example.tsunotintime.data.remote.UserService
 import com.example.tsunotintime.data.remote.interceptor.AuthInterceptor
-import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -18,7 +17,7 @@ val networkModule = module {
         }
     }
 
-    single { lazy { get<Retrofit>().create(AuthService::class.java) } }
+    single { lazy { get<Retrofit>().create(UserService::class.java) } }
     single { AuthInterceptor(get()) }
     single {
         MyClient.getUnsafeOkHttpClient(get())
@@ -30,5 +29,5 @@ val networkModule = module {
             .baseUrl(BASE_URL)
             .build()
     }
-    single { get<Retrofit>().create(AuthService::class.java) }
+    single { get<Retrofit>().create(UserService::class.java) }
 }

@@ -4,14 +4,14 @@ import android.util.Log
 import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.example.tsunotintime.data.models.RefreshTokenRequestModel
-import com.example.tsunotintime.data.remote.AuthService
+import com.example.tsunotintime.data.remote.UserService
 import com.example.tsunotintime.data.storage.PrivateTokenStorage
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-class AuthInterceptor(private val authService: Lazy<AuthService>) : Interceptor {
+class AuthInterceptor(private val userService: Lazy<UserService>) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -64,7 +64,7 @@ class AuthInterceptor(private val authService: Lazy<AuthService>) : Interceptor 
             }
 
             val refreshResponse =
-                authService.value.refreshToken(RefreshTokenRequestModel(userId, refreshToken))
+                userService.value.refreshToken(RefreshTokenRequestModel(userId, refreshToken))
 
             if (refreshResponse.isSuccessful) {
                 val newAccessToken = refreshResponse.body()?.accessToken

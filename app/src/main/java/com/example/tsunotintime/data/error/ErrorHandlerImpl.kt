@@ -4,11 +4,15 @@ import com.example.tsunotintime.domain.entity.ErrorEntity
 import com.example.tsunotintime.domain.error.ErrorHandler
 import okio.IOException
 import retrofit2.HttpException
+import java.net.ConnectException
 import java.net.HttpURLConnection
+import java.net.UnknownHostException
 
 class ErrorHandlerImpl : ErrorHandler {
     override fun getError(throwable: Throwable): ErrorEntity {
         return when (throwable) {
+            is UnknownHostException -> ErrorEntity.Network(throwable.message)
+            is ConnectException -> ErrorEntity.Connection(throwable.message)
             is IOException -> ErrorEntity.Network(throwable.message)
             is HttpException -> {
                 when (throwable.code()) {

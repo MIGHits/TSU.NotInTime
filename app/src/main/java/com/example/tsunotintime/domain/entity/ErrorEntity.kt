@@ -1,6 +1,7 @@
 package com.example.tsunotintime.domain.entity
 
 sealed class ErrorEntity {
+    data class Connection(val errorMessage: String?) : ErrorEntity()
     data class Network(val errorMessage: String?) : ErrorEntity()
     data class NotFound(val errorMessage: String?) : ErrorEntity()
     data class ServiceUnavailable(val errorMessage: String?) : ErrorEntity()

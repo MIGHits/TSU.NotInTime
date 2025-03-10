@@ -4,7 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
+import com.example.tsunotintime.common.Constant.NETWORK_ERROR
+import com.example.tsunotintime.common.URL.BASE_URL
 import com.example.tsunotintime.domain.entity.ErrorEntity
 import com.example.tsunotintime.domain.entity.LoginCredentialsModel
 import com.example.tsunotintime.domain.entity.Result
@@ -118,8 +121,7 @@ class LoginViewModel(
                     var errorMessage = EMPTY_RESULT
 
                     when (response.error) {
-                        is ErrorEntity.Network -> errorMessage =
-                            response.error.errorMessage.toString()
+                        is ErrorEntity.Network -> errorMessage = CONNECTION_ERROR
 
                         is ErrorEntity.AccessDenied -> errorMessage =
                             response.error.errorMessage.toString()
@@ -135,6 +137,8 @@ class LoginViewModel(
 
                         is ErrorEntity.Unknown -> errorMessage =
                             response.error.errorMessage.toString()
+
+                        is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))

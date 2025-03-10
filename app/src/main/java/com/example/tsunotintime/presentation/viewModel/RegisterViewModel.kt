@@ -4,7 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
+import com.example.tsunotintime.common.Constant.NETWORK_ERROR
 import com.example.tsunotintime.domain.entity.ErrorEntity
 import com.example.tsunotintime.domain.entity.LoginCredentialsModel
 import com.example.tsunotintime.domain.entity.Result
@@ -29,7 +31,7 @@ class RegisterViewModel(
     private val confirmPasswordUseCase: ConfirmPasswordUseCase,
     private val registrationFieldUseCase: ValidateRegistrationFieldUseCase,
     private val registerUseCase: RegisterUseCase,
-    private val logoutUseCase:LogoutUseCase
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf(ScreenState(currentState = FetchDataState.Initial))
@@ -78,8 +80,7 @@ class RegisterViewModel(
             }
 
             is RegisterEvent.ButtonClick -> {
-                //register()
-                logout()
+                register()
             }
 
             is RegisterEvent.FormChange -> handleFormChange(event.focusField)
@@ -108,8 +109,7 @@ class RegisterViewModel(
                     var errorMessage = EMPTY_RESULT
 
                     when (response.error) {
-                        is ErrorEntity.Network -> errorMessage =
-                            response.error.errorMessage.toString()
+                        is ErrorEntity.Network -> errorMessage = CONNECTION_ERROR
 
                         is ErrorEntity.AccessDenied -> errorMessage =
                             response.error.errorMessage.toString()
@@ -125,6 +125,8 @@ class RegisterViewModel(
 
                         is ErrorEntity.Unknown -> errorMessage =
                             response.error.errorMessage.toString()
+
+                        is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
@@ -132,44 +134,7 @@ class RegisterViewModel(
             }
         }
     }
-    private fun logout() {
-        _screenState.value = _screenState.value.copy(currentState = FetchDataState.Loading)
-        viewModelScope.launch {
-            val response = logoutUseCase()
-            when (response) {
-                is Result.Success -> {
-                    _screenState.value =
-                        _screenState.value.copy(currentState = FetchDataState.Success)
-                }
 
-                is Result.Error -> {
-                    var errorMessage = EMPTY_RESULT
-
-                    when (response.error) {
-                        is ErrorEntity.Network -> errorMessage =
-                            response.error.errorMessage.toString()
-
-                        is ErrorEntity.AccessDenied -> errorMessage =
-                            response.error.errorMessage.toString()
-
-                        is ErrorEntity.BadRequest -> errorMessage =
-                            response.error.errorMessage.toString()
-
-                        is ErrorEntity.NotFound -> errorMessage =
-                            response.error.errorMessage.toString()
-
-                        is ErrorEntity.ServiceUnavailable -> errorMessage =
-                            response.error.errorMessage.toString()
-
-                        is ErrorEntity.Unknown -> errorMessage =
-                            response.error.errorMessage.toString()
-                    }
-                    _screenState.value =
-                        _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
-                }
-            }
-        }
-    }
     private fun handleFormChange(focusField: InputType) {
 
         when (focusField) {

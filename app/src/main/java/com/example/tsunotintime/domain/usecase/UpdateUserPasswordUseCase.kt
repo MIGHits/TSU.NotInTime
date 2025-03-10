@@ -1,17 +1,17 @@
 package com.example.tsunotintime.domain.usecase
 
-import com.example.tsunotintime.domain.entity.LoginCredentialsModel
+import com.example.tsunotintime.domain.entity.ResponseModel
 import com.example.tsunotintime.domain.entity.Result
 import com.example.tsunotintime.domain.error.ErrorHandler
-import com.example.tsunotintime.domain.repository.AuthRepository
+import com.example.tsunotintime.domain.repository.ProfileRepository
 
-class LoginUseCase(
-    private val repository: AuthRepository,
+class UpdateUserPasswordUseCase(
+    private val repository: ProfileRepository,
     private val errorHandler: ErrorHandler
 ) {
-    suspend operator fun invoke(credentials: LoginCredentialsModel): Result<Unit> {
+    suspend operator fun invoke(newPassword: String): Result<Unit> {
         try {
-            val response = repository.login(credentials)
+            val response = repository.updatePassword(newPassword)
             return Result.Success(response)
         } catch (throwable: Throwable) {
             return Result.Error(errorHandler.getError(throwable))

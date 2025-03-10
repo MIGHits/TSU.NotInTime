@@ -2,9 +2,11 @@ package com.example.tsunotintime.di
 
 import com.example.tsunotintime.data.error.ErrorHandlerImpl
 import com.example.tsunotintime.data.repository.AuthRepositoryImpl
+import com.example.tsunotintime.data.repository.ProfileRepositoryImpl
 import com.example.tsunotintime.data.repository.ValidationRepositoryImpl
 import com.example.tsunotintime.domain.error.ErrorHandler
 import com.example.tsunotintime.domain.repository.AuthRepository
+import com.example.tsunotintime.domain.repository.ProfileRepository
 import com.example.tsunotintime.domain.repository.ValidationRepository
 import org.koin.dsl.module
 
@@ -13,7 +15,10 @@ val dataModule = module {
         ValidationRepositoryImpl()
     }
     factory<AuthRepository> {
-        AuthRepositoryImpl(authService = get())
+        AuthRepositoryImpl(userService = get())
+    }
+    factory<ProfileRepository> {
+        ProfileRepositoryImpl(userService = get())
     }
     single<ErrorHandler> {
         ErrorHandlerImpl()
