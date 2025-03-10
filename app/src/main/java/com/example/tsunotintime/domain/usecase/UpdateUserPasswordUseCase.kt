@@ -9,7 +9,7 @@ class UpdateUserPasswordUseCase(
     private val repository: ProfileRepository,
     private val errorHandler: ErrorHandler
 ) {
-    suspend operator fun invoke(newPassword: String): Result<Unit> {
+    suspend operator fun invoke(newPassword: String): Result<ResponseModel?> {
         try {
             val response = repository.updatePassword(newPassword)
             return Result.Success(response)
