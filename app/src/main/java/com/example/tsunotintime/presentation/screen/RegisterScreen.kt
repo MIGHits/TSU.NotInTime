@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -35,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
+import com.example.tsunotintime.presentation.components.ErrorComponent
 import com.example.tsunotintime.presentation.components.LoadingIndicator
 import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
@@ -49,14 +48,14 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 fun RegisterScreen(
     registerViewModel: RegisterViewModel,
     back: () -> Unit,
-    toLogin: () -> Unit
+    toLogin: () -> Unit,
+    onSuccess:() ->Unit
 ) {
-    val screenState = registerViewModel.screenState.value.currentState
-    when (screenState) {
+    when (val screenState = registerViewModel.screenState.value.currentState) {
         is FetchDataState.Initial -> RegistrationForm(registerViewModel, back, toLogin)
-        is FetchDataState.Error -> {}
+        is FetchDataState.Error -> { ErrorComponent(screenState.message,{})}
         FetchDataState.Loading -> LoadingIndicator()
-        FetchDataState.Success -> {}
+        FetchDataState.Success -> {onSuccess()}
     }
 }
 

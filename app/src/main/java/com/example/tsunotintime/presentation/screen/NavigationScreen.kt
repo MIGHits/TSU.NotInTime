@@ -34,8 +34,12 @@ fun NavigationScreen(
                         }
                     }
                 },
-                toRegistration = { navController.navigate(Route.RegistrationScreen.route) }
-            )
+                toRegistration = { navController.navigate(Route.RegistrationScreen.route) },
+                onSuccess = {
+                    navController.navigate(Route.ProfileScreen.route) {
+                        popUpTo(Route.ProfileScreen.route) { inclusive = false }
+                    }
+                })
         }
         composable(Route.RegistrationScreen.route) {
             RegisterScreen(
@@ -47,7 +51,19 @@ fun NavigationScreen(
                         }
                     }
                 },
-                toLogin = { navController.navigate(Route.LoginScreen.route) })
+                toLogin = { navController.navigate(Route.LoginScreen.route) },
+                onSuccess = {
+                    navController.navigate(Route.ProfileScreen.route) {
+                        popUpTo(Route.ProfileScreen.route) { inclusive = false }
+                    }
+                })
+        }
+        composable(Route.ProfileScreen.route) {
+            ProfileScreen(koinViewModel(), back = { navController.navigateUp() }, logoutAction = {
+                navController.navigate(Route.WelcomeScreen.route) {
+                    popUpTo(Route.WelcomeScreen.route) { inclusive = true }
+                }
+            })
         }
     }
 }

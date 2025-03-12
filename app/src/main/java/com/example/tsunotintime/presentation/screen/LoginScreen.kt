@@ -6,20 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -28,9 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
+import com.example.tsunotintime.presentation.components.ErrorComponent
 import com.example.tsunotintime.presentation.components.LoadingIndicator
 import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.InputType
@@ -60,15 +49,14 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 fun LoginScreen(
     loginViewModel: LoginViewModel,
     back: () -> Unit,
-    toRegistration: () -> Unit
+    toRegistration: () -> Unit,
+    onSuccess: () -> Unit
 ) {
-    val dataState = loginViewModel.screenState.value.currentState
-
-    when (dataState) {
+    when (val dataState = loginViewModel.screenState.value.currentState) {
         is FetchDataState.Initial -> LoginForm(back, toRegistration, loginViewModel)
-        is FetchDataState.Error -> {}
+        is FetchDataState.Error -> { ErrorComponent(dataState.message,{})}
         FetchDataState.Loading -> LoadingIndicator()
-        FetchDataState.Success -> {}
+        FetchDataState.Success -> {onSuccess()}
     }
 }
 
@@ -174,7 +162,7 @@ fun LoginForm(
                 buttonText = stringResource(R.string.Enter),
                 modifier = Modifier.fillMaxWidth(0.8f),
                 isEnabled = loginFormState.isValid,
-                onClick = {loginViewModel.createEvent(LoginEvent.ButtonClick)}
+                onClick = { loginViewModel.createEvent(LoginEvent.ButtonClick) }
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

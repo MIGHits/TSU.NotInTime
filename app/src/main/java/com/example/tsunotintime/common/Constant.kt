@@ -9,4 +9,13 @@ object Constant {
     const val CONNECT_TIMEOUT = 10L
     const val WRITE_TIMEOUT = 10L
     const val READ_TIMEOUT = 10L
+
+    const val STUDENT = "Студент"
+    const val DEAN = "Сотрудник Деканата"
+    const val TEACHER = "Преподаватель"
+    const val UNVERIFIED = "Статус не подтвержден"
+    const val ADMIN = "Администратор"
+
+    const val NETWORK_ERROR  = "Проверьте соединение с сетью"
+    const val CONNECTION_ERROR = "Не удалось установить соединение"
 }
