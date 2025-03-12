@@ -1,6 +1,10 @@
 package com.example.tsunotintime.domain.entity
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ResponseModel(
-    val status: String?,
-    val message: String?
+    @SerialName("Status") val status: String?,
+    @SerialName("Message") val message: String?
 )

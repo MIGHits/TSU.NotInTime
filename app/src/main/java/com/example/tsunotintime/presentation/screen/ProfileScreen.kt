@@ -47,7 +47,6 @@ import com.example.tsunotintime.presentation.components.LoadingIndicator
 import com.example.tsunotintime.presentation.components.ProfileButton
 import com.example.tsunotintime.presentation.components.ProfileField
 import com.example.tsunotintime.presentation.state.FetchDataState
-import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.ProfileEvent
 import com.example.tsunotintime.presentation.state.ProfileState
 import com.example.tsunotintime.presentation.viewModel.ProfileViewModel

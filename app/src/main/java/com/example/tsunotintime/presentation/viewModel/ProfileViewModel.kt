@@ -22,12 +22,10 @@ import com.example.tsunotintime.domain.usecase.LogoutUseCase
 import com.example.tsunotintime.domain.usecase.UpdateUserPasswordUseCase
 import com.example.tsunotintime.domain.usecase.ValidatePasswordUseCase
 import com.example.tsunotintime.presentation.state.FetchDataState
-import com.example.tsunotintime.presentation.state.InputType
 import com.example.tsunotintime.presentation.state.ProfileEvent
 import com.example.tsunotintime.presentation.state.ProfileState
 import com.example.tsunotintime.presentation.state.ScreenState
 import kotlinx.coroutines.launch
-import java.security.PrivateKey
 
 class ProfileViewModel(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
@@ -113,7 +111,7 @@ class ProfileViewModel(
             when (val response = updatePasswordUseCase(_profileState.value.newPassword.text)) {
 
                 is Result.Success -> {
-                    Toast.makeText(instance, response.data.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(instance, response.data?.message, Toast.LENGTH_SHORT).show()
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Success)
                 }

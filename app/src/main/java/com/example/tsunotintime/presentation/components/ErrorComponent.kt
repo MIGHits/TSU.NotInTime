@@ -1,5 +1,8 @@
 package com.example.tsunotintime.presentation.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -19,10 +22,15 @@ fun ErrorComponent(message: String, onRetry: () -> Unit) {
                 textAlign = TextAlign.Center
             )
         },
-        text = { Text(text = message) },
+        text = { Text(text = message, textAlign = TextAlign.Center) },
         confirmButton = {
-            Button(onClick = onRetry, modifier = Modifier) {
-                Text(text = stringResource(R.string.retry))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(onClick = onRetry) {
+                    Text(text = stringResource(R.string.retry))
+                }
             }
         },
         modifier = Modifier

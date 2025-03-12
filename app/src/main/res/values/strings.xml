@@ -34,4 +34,10 @@
     <string name="status">Статус</string>
     <string name="wrong_message">Что-то пошло не так</string>
     <string name="retry">Попробовать снова</string>
+    <string name="date_period">Период</string>
+    <string name="create_time">Дата создания</string>
+    <string name="initials">ФИО</string>
+    <string name="checking">На проверке</string>
+    <string name="approved">Подтверждено</string>
+    <string name="rejected">Отклонено</string>
 </resources>

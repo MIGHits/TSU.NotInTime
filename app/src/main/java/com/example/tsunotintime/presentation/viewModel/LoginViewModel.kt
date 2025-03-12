@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.Constant.NETWORK_ERROR
-import com.example.tsunotintime.common.URL.BASE_URL
 import com.example.tsunotintime.domain.entity.ErrorEntity
 import com.example.tsunotintime.domain.entity.LoginCredentialsModel
 import com.example.tsunotintime.domain.entity.Result
