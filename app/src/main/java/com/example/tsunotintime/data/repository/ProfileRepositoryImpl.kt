@@ -5,6 +5,7 @@ import com.example.tsunotintime.data.remote.UserService
 import com.example.tsunotintime.domain.entity.ResponseModel
 import com.example.tsunotintime.domain.entity.UserModel
 import com.example.tsunotintime.domain.repository.ProfileRepository
+import com.example.tsunotintime.utils.ErrorParser.parseErrorMessage
 import retrofit2.HttpException
 
 class ProfileRepositoryImpl(private val userService: UserService) : ProfileRepository {
@@ -13,7 +14,8 @@ class ProfileRepositoryImpl(private val userService: UserService) : ProfileRepos
         if (response.isSuccessful) {
             return response.body()
         } else {
-            throw HttpException(response)
+            val errorMessage = parseErrorMessage(response)
+            throw HttpException(response).initCause(Throwable(errorMessage))
         }
     }
 
@@ -22,7 +24,8 @@ class ProfileRepositoryImpl(private val userService: UserService) : ProfileRepos
         if (response.isSuccessful) {
             return response.body()
         } else {
-            throw HttpException(response)
+            val errorMessage = parseErrorMessage(response)
+            throw HttpException(response).initCause(Throwable(errorMessage))
         }
     }
 }

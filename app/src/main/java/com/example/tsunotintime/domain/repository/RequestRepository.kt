@@ -1,5 +1,6 @@
 package com.example.tsunotintime.domain.repository
 
+import android.net.Uri
 import com.example.tsunotintime.data.models.RequestStatus
 import com.example.tsunotintime.domain.entity.RequestListModel
 import com.example.tsunotintime.domain.entity.RequestModel
@@ -24,6 +25,6 @@ interface RequestRepository {
         description: String,
         absenceDateFrom: String,
         absenceDateTo: String,
-        newImages: List<String>
-    ): String?
+        newImages: List<Uri>
+    )
 }

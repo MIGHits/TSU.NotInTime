@@ -36,7 +36,8 @@ val appModule = module {
         RequestViewModel(
             getRequestUseCase = get(),
             getUserRequestsUseCase = get(),
-            imageLoader = get()
+            imageLoader = get(),
+            requestEditUseCase = get()
         )
     }
 }

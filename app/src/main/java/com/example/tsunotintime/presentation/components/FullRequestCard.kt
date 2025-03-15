@@ -4,10 +4,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.view.ContextThemeWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,9 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.Placeholder
+import com.bumptech.glide.integration.compose.placeholder
 import com.example.tsunotintime.R
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.URL.IMAGE_URL
+import com.example.tsunotintime.data.models.RequestStatus
 import com.example.tsunotintime.domain.entity.RequestModel
 import com.example.tsunotintime.presentation.state.RequestDetailsState
 import com.example.tsunotintime.ui.theme.Nunito
@@ -72,11 +77,19 @@ import java.util.TimeZone
 fun FullRequestCard(
     requestState: RequestDetailsState,
     onDismiss: () -> Unit,
-    onSave: (RequestModel) -> Unit,
+    onSave: (
+        requestId: String,
+        status: RequestStatus,
+        images: List<String>,
+        description: String,
+        absenceDateFrom: String,
+        absenceDateTo: String,
+        newImages: List<Uri>
+    ) -> Unit,
 ) {
     val context = LocalContext.current
     var localRequestState by remember { mutableStateOf(requestState) }
-    var newImages by remember { mutableStateOf(listOf<String>()) }
+    var newImages by remember { mutableStateOf(listOf<Uri>()) }
 
     fun validateDateTime(): Boolean {
         return try {
@@ -236,7 +249,7 @@ fun FullRequestCard(
                     Spacer(modifier = Modifier.height(8.dp))
                     PickImage({ uri ->
                         uri?.let {
-                            newImages = newImages + uri.toString()
+                            newImages = newImages + uri
                         }
                     }, context)
                 }
@@ -257,7 +270,8 @@ fun FullRequestCard(
                                     .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                                     .clickable {
                                         openImageInGallery(context, imageUrl)
-                                    }
+                                    },
+                                loading = placeholder({ LoadingIndicator() })
                             )
                             if (localRequestState.isEditing) {
                                 IconButton(
@@ -298,7 +312,7 @@ fun FullRequestCard(
                                     .clip(RoundedCornerShape(8.dp))
                                     .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                                     .clickable {
-                                        openImageInGallery(context, imageUrl)
+                                        openImageInGallery(context, imageUrl.toString())
                                     }
                             )
                             if (localRequestState.isEditing) {
@@ -328,7 +342,15 @@ fun FullRequestCard(
                 Button(
                     onClick = {
                         if (validateDateTime()) {
-                            TODO()
+                            onSave(
+                                localRequestState.requestModel?.id ?: EMPTY_RESULT,
+                                localRequestState.requestModel?.status ?: RequestStatus.Checking,
+                                localRequestState.requestModel?.images ?: emptyList(),
+                                localRequestState.requestModel?.description ?: EMPTY_RESULT,
+                                localRequestState.requestModel?.absenceDateFrom ?: EMPTY_RESULT,
+                                localRequestState.requestModel?.absenceDateTo ?: EMPTY_RESULT,
+                                newImages
+                            )
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

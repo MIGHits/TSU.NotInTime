@@ -1,13 +1,18 @@
 package com.example.tsunotintime.data.repository
 
+import android.content.Context
+import android.net.Uri
+import com.example.tsunotintime.AppContext.Companion.instance
 import com.example.tsunotintime.data.models.RequestStatus
 import com.example.tsunotintime.data.remote.RequestService
 import com.example.tsunotintime.domain.entity.RequestListModel
 import com.example.tsunotintime.domain.entity.RequestModel
 import com.example.tsunotintime.domain.repository.RequestRepository
+import com.example.tsunotintime.utils.ErrorParser.parseErrorMessage
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import java.io.File
 
@@ -26,7 +31,8 @@ class RequestRepositoryImpl(private val requestService: RequestService) : Reques
         if (response.isSuccessful) {
             return response.body()
         } else {
-            throw HttpException(response)
+            val errorMessage = parseErrorMessage(response)
+            throw HttpException(response).initCause(Throwable(errorMessage))
         }
     }
 
@@ -57,7 +63,8 @@ class RequestRepositoryImpl(private val requestService: RequestService) : Reques
         return if (response.isSuccessful) {
             response.body()
         } else {
-            throw HttpException(response)
+            val errorMessage = parseErrorMessage(response)
+            throw HttpException(response).initCause(Throwable(errorMessage))
         }
     }
 
@@ -68,39 +75,51 @@ class RequestRepositoryImpl(private val requestService: RequestService) : Reques
         description: String,
         absenceDateFrom: String,
         absenceDateTo: String,
-        newImages: List<String>
-    ): String? {
+        newImages: List<Uri>
+    ) {
         val absenceDateFromBody =
             RequestBody.create("text/plain".toMediaTypeOrNull(), absenceDateFrom)
         val absenceDateToBody = RequestBody.create("text/plain".toMediaTypeOrNull(), absenceDateTo)
         val descriptionBody = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
-        val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status.name)
         val fileParts = images.map { filePath ->
             val file = File(filePath)
             val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), file)
-            MultipartBody.Part.createFormData("files", file.name, requestBody)
+            MultipartBody.Part.createFormData("Images", file.name, requestBody)
         }
 
-        val newParts = images.map { newImage ->
-            val file = File(newImage)
-            val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), file)
-            MultipartBody.Part.createFormData("files", file.name, requestBody)
-        }
+        val newParts = prepareImagesForUpload(instance, newImages)
 
         val response = requestService.editRequest(
             requestId = requestId,
             absenceDateFrom = absenceDateFromBody,
             absenceDateTo = absenceDateToBody,
             description = descriptionBody,
-            status = statusBody,
+            status = null,
             Images = fileParts,
             newImages = newParts
         )
-
-        return if (response.isSuccessful) {
-            response.body()
-        } else {
-            throw HttpException(response)
+        if (!response.isSuccessful) {
+            val errorMessage = parseErrorMessage(response)
+            throw HttpException(response).initCause(Throwable(errorMessage))
         }
     }
+}
+
+fun prepareImagesForUpload(context: Context, imageUris: List<Uri>): List<MultipartBody.Part> {
+    return imageUris.map { uri ->
+        val file = uriToFile(context, uri)
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        MultipartBody.Part.createFormData("newImages", file.name, requestBody)
+    }
+}
+
+fun uriToFile(context: Context, uri: Uri): File {
+    val contentResolver = context.contentResolver
+    val tempFile = File.createTempFile("temp_image", ".jpeg", context.cacheDir)
+    tempFile.outputStream().use { output ->
+        contentResolver.openInputStream(uri)?.use { input ->
+            input.copyTo(output)
+        }
+    }
+    return tempFile
 }

@@ -51,4 +51,7 @@
     <string name="decline">Отмена</string>
     <string name="date_error">Ошибка при обработке дат.</string>
     <string name="earlierDateError">Дата начала не может быть позже даты окончания</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="error_fetch_failed">Не удалось извлечь сообщение об ошибке</string>
+    <string name="recent_request">Последние заявки</string>
 </resources>

@@ -44,11 +44,11 @@ interface RequestService {
     @PUT(GET_CONCRETE_REQUEST)
     suspend fun editRequest(
         @Path("id") requestId: String,
-        @Part("Status") status: RequestBody,
+        @Part("Status") status: RequestBody?,
         @Part("Description") description: RequestBody,
         @Part("AbsenceDateFrom") absenceDateFrom: RequestBody,
         @Part("AbsenceDateTo") absenceDateTo: RequestBody,
         @Part Images: List<MultipartBody.Part>,
         @Part newImages: List<MultipartBody.Part>
-    ): Response<String>
+    ): Response<Unit>
 }

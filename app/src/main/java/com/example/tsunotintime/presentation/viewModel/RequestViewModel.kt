@@ -1,5 +1,6 @@
 package com.example.tsunotintime.presentation.viewModel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
@@ -18,6 +19,7 @@ import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.RequestState
 import com.example.tsunotintime.presentation.state.ScreenState
 import com.example.tsunotintime.domain.entity.Result
+import com.example.tsunotintime.domain.usecase.RequestEditUseCase
 import com.example.tsunotintime.presentation.state.BadgeState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +29,8 @@ import kotlinx.coroutines.launch
 class RequestViewModel(
     private val getUserRequestsUseCase: GetUserRequestsUseCase,
     private val getRequestUseCase: GetRequestUseCase,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val requestEditUseCase: RequestEditUseCase
 ) : ViewModel() {
     private val _screenState =
         MutableStateFlow((ScreenState(currentState = FetchDataState.Initial)))
@@ -146,4 +149,62 @@ class RequestViewModel(
         _requestState.value = _requestState.value.copy(badgeState = badgeState)
     }
 
+    fun toInitialState() {
+        _cardDialogState.value = _cardDialogState.value.copy(currentState = FetchDataState.Initial)
+    }
+
+    fun editRequest(
+        requestId: String,
+        status: RequestStatus,
+        images: List<String>,
+        description: String,
+        absenceDateFrom: String,
+        absenceDateTo: String,
+        newImages: List<Uri>
+    ) {
+        _cardDialogState.value = _cardDialogState.value.copy(currentState = FetchDataState.Loading)
+        viewModelScope.launch {
+            when (val response = requestEditUseCase(
+                requestId,
+                status,
+                images,
+                description,
+                absenceDateFrom,
+                absenceDateTo,
+                newImages
+            )) {
+                is Result.Success -> {
+                    _cardDialogState.value =
+                        _cardDialogState.value.copy(currentState = FetchDataState.Success)
+                }
+
+                is Result.Error -> {
+                    var errorMessage = EMPTY_RESULT
+
+                    when (response.error) {
+                        is ErrorEntity.Network -> errorMessage = CONNECTION_ERROR
+
+                        is ErrorEntity.AccessDenied -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.BadRequest -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.NotFound -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.ServiceUnavailable -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.Unknown -> errorMessage =
+                            response.error.errorMessage.toString()
+
+                        is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+                    }
+                    _cardDialogState.value =
+                        _cardDialogState.value.copy(currentState = FetchDataState.Error(errorMessage))
+                }
+            }
+        }
+    }
 }
