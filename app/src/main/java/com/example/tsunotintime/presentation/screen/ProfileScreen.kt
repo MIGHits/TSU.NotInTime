@@ -76,7 +76,10 @@ fun ProfileScreen(viewModel: ProfileViewModel, back: () -> Unit, logoutAction: (
             })
 
         is FetchDataState.Loading -> LoadingIndicator()
-        is FetchDataState.Error -> ErrorComponent(message = screenState.message, {})
+        is FetchDataState.Error -> ErrorComponent(
+            message = screenState.message,
+            { viewModel.getProfile() }, {})
+
         FetchDataState.Initial -> {}
     }
 }

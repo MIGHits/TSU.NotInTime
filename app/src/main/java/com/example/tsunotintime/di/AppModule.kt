@@ -3,6 +3,7 @@ package com.example.tsunotintime.di
 import com.example.tsunotintime.presentation.viewModel.LoginViewModel
 import com.example.tsunotintime.presentation.viewModel.ProfileViewModel
 import com.example.tsunotintime.presentation.viewModel.RegisterViewModel
+import com.example.tsunotintime.presentation.viewModel.RequestViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,8 +21,7 @@ val appModule = module {
             passwordUseCase = get(),
             confirmPasswordUseCase = get(),
             registrationFieldUseCase = get(),
-            registerUseCase = get(),
-            logoutUseCase = get()
+            registerUseCase = get()
         )
     }
     viewModel<ProfileViewModel> {
@@ -30,6 +30,13 @@ val appModule = module {
             getProfileUseCase = get(),
             updatePasswordUseCase = get(),
             logoutUseCase = get()
+        )
+    }
+    viewModel<RequestViewModel> {
+        RequestViewModel(
+            getRequestUseCase = get(),
+            getUserRequestsUseCase = get(),
+            imageLoader = get()
         )
     }
 }

@@ -49,13 +49,21 @@ fun RegisterScreen(
     registerViewModel: RegisterViewModel,
     back: () -> Unit,
     toLogin: () -> Unit,
-    onSuccess:() ->Unit
+    onSuccess: () -> Unit
 ) {
     when (val screenState = registerViewModel.screenState.value.currentState) {
         is FetchDataState.Initial -> RegistrationForm(registerViewModel, back, toLogin)
-        is FetchDataState.Error -> { ErrorComponent(screenState.message,{})}
+        is FetchDataState.Error -> {
+            ErrorComponent(
+                screenState.message,
+                onRetry = { registerViewModel.register() },
+                { registerViewModel.toInitialState() })
+        }
+
         FetchDataState.Loading -> LoadingIndicator()
-        FetchDataState.Success -> {onSuccess()}
+        FetchDataState.Success -> {
+            onSuccess()
+        }
     }
 }
 
@@ -201,7 +209,7 @@ fun RegistrationForm(
                 buttonText = stringResource(R.string.Register_label),
                 modifier = Modifier.fillMaxWidth(0.8f),
                 isEnabled = registerFormState.isValid,
-                onClick = {registerViewModel.createEvent(RegisterEvent.ButtonClick)}
+                onClick = { registerViewModel.createEvent(RegisterEvent.ButtonClick) }
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
