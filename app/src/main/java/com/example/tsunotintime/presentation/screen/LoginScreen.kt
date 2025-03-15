@@ -19,6 +19,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,11 +55,20 @@ fun LoginScreen(
     toRegistration: () -> Unit,
     onSuccess: () -> Unit
 ) {
-    when (val dataState = loginViewModel.screenState.value.currentState) {
+    val screenState by loginViewModel.screenState.collectAsState()
+    when (screenState.currentState) {
         is FetchDataState.Initial -> LoginForm(back, toRegistration, loginViewModel)
-        is FetchDataState.Error -> { ErrorComponent(dataState.message,{})}
+        is FetchDataState.Error -> {
+            ErrorComponent(
+                (screenState.currentState as FetchDataState.Error).message,
+                onRetry = { loginViewModel.login() },
+                { loginViewModel.toInitialState() })
+        }
+
         FetchDataState.Loading -> LoadingIndicator()
-        FetchDataState.Success -> {onSuccess()}
+        FetchDataState.Success -> {
+            onSuccess()
+        }
     }
 }
 
@@ -67,7 +79,7 @@ fun LoginForm(
     loginViewModel: LoginViewModel
 ) {
     val scrollState = rememberScrollState()
-    val loginFormState = loginViewModel.state.value
+    val loginFormState by loginViewModel.state.collectAsState()
 
     Box(
         modifier = Modifier

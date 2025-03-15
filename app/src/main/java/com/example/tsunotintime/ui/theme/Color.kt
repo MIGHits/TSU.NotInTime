@@ -17,9 +17,13 @@ val enabledButton = Color(0xFF007C69)
 val SecondaryButton = Color(0xFF3E78BC)
 val editButtonBackground = Color(0x99A8C2F3)
 val PrimaryButton = Color(0xFF40A9FF)
+
 val exitButtonBackground = Color(0xFFEFC6C6)
 val exitButtonIconTint = Color(0xFFFF6B6B)
+
 val approvedBadgeBackground = Color(0xFFD8F6C6)
 val approvedBadgeTextTint = Color(0xFF8AD974)
+val approvedStatusColor = Color(0xFF8AD974)
+
 val pendingBadgeBackground = Color(0xFFEFD9C6)
 val pendingBadgeTextTint = Color(0xFFFFBC6B)

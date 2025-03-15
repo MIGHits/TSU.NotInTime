@@ -19,6 +19,9 @@ import com.example.tsunotintime.presentation.state.LoginCredentialsState
 import com.example.tsunotintime.presentation.state.LoginEvent
 import com.example.tsunotintime.presentation.state.ScreenState
 import com.example.tsunotintime.presentation.state.ValidationResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -27,14 +30,18 @@ class LoginViewModel(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
-    private val _screenState = mutableStateOf(ScreenState(currentState = FetchDataState.Initial))
-    val screenState: State<ScreenState> = _screenState
+    private val _screenState = MutableStateFlow(ScreenState(currentState = FetchDataState.Initial))
+    val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
 
-    private val _state = mutableStateOf(LoginCredentialsState(isValid = false))
-    val state: State<LoginCredentialsState> = _state
+    private val _state = MutableStateFlow(LoginCredentialsState(isValid = false))
+    val state: StateFlow<LoginCredentialsState> = _state.asStateFlow()
 
     fun createEvent(event: LoginEvent) {
         onEvent(event)
+    }
+
+    fun toInitialState() {
+        _screenState.value = _screenState.value.copy(currentState = FetchDataState.Initial)
     }
 
     private fun onEvent(event: LoginEvent) {
@@ -101,7 +108,7 @@ class LoginViewModel(
     }
 
 
-    private fun login() {
+    fun login() {
         _screenState.value = _screenState.value.copy(currentState = FetchDataState.Loading)
         viewModelScope.launch {
             val response = loginUseCase(

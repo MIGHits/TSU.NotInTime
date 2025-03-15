@@ -30,8 +30,7 @@ class RegisterViewModel(
     private val passwordUseCase: ValidatePasswordUseCase,
     private val confirmPasswordUseCase: ConfirmPasswordUseCase,
     private val registrationFieldUseCase: ValidateRegistrationFieldUseCase,
-    private val registerUseCase: RegisterUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf(ScreenState(currentState = FetchDataState.Initial))
@@ -43,6 +42,10 @@ class RegisterViewModel(
 
     fun createEvent(event: RegisterEvent) {
         onEvent(event)
+    }
+
+    fun toInitialState() {
+        _screenState.value = _screenState.value.copy(currentState = FetchDataState.Initial)
     }
 
     private fun onEvent(event: RegisterEvent) {
@@ -87,7 +90,7 @@ class RegisterViewModel(
         }
     }
 
-    private fun register() {
+    fun register() {
         _screenState.value = _screenState.value.copy(currentState = FetchDataState.Loading)
         viewModelScope.launch {
             val response = registerUseCase(

@@ -1,26 +1,31 @@
 package com.example.tsunotintime.common
 
+import android.annotation.SuppressLint
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.CachePolicy
+import coil3.request.crossfade
+import com.example.tsunotintime.AppContext.Companion.instance
 import com.example.tsunotintime.data.remote.interceptor.AuthInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateException
-import javax.net.ssl.X509TrustManager;
-import java.security.cert.X509Certificate;
-import javax.net.ssl.HostnameVerifier
+import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 object MyClient {
 
-    fun getUnsafeOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient? {
+    fun getUnsafeOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         return try {
             val trustAllCerts = arrayOf<TrustManager>(
+                @SuppressLint("CustomX509TrustManager")
                 object : X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
                     @Throws(CertificateException::class)
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate?>?,
@@ -28,6 +33,7 @@ object MyClient {
                     ) {
                     }
 
+                    @SuppressLint("TrustAllX509TrustManager")
                     @Throws(CertificateException::class)
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate?>?,
@@ -62,13 +68,25 @@ object MyClient {
 
             val builder = OkHttpClient.Builder()
                 .sslSocketFactory(sslSocketFactory, trustManager)
-                .hostnameVerifier(HostnameVerifier { _, _ -> true }) // Disable hostname verification
-                .addInterceptor(loggingInterceptor) // Add the logging interceptor
+                .hostnameVerifier { _, _ -> true }
+                .addInterceptor(loggingInterceptor)
                 .addInterceptor(authInterceptor)
             builder.build()
 
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+
+    fun getImageLoader(interceptor: AuthInterceptor): ImageLoader {
+        return ImageLoader.Builder(instance)
+            .components {
+                add(OkHttpNetworkFetcherFactory(
+                    callFactory = { getUnsafeOkHttpClient(authInterceptor = interceptor) }
+                ))
+            }
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .crossfade(true)
+            .build()
     }
 }

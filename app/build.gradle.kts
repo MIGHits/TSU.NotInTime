@@ -52,6 +52,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.compose)
+    implementation (libs.glide)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.com.auth0.java.jwt)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.jwt)

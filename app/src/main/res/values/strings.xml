@@ -40,4 +40,15 @@
     <string name="checking">На проверке</string>
     <string name="approved">Подтверждено</string>
     <string name="rejected">Отклонено</string>
+    <string name="your_requests">Ваши заявки</string>
+    <string name="from_date">Дата начала</string>
+    <string name="date_to">Дата окончания</string>
+    <string name="images">Изображения</string>
+    <string name="attach_image">" Прикрепить"</string>
+    <string name="image_input">image/*</string>
+    <string name="checked_by">Вердикт выставлен</string>
+    <string name="description">Описание</string>
+    <string name="decline">Отмена</string>
+    <string name="date_error">Ошибка при обработке дат.</string>
+    <string name="earlierDateError">Дата начала не может быть позже даты окончания</string>
 </resources>

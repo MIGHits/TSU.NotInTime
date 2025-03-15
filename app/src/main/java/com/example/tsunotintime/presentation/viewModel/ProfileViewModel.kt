@@ -27,6 +27,7 @@ import com.example.tsunotintime.presentation.state.ProfileState
 import com.example.tsunotintime.presentation.state.ScreenState
 import kotlinx.coroutines.launch
 
+
 class ProfileViewModel(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val getProfileUseCase: GetProfileUseCase,
@@ -49,7 +50,8 @@ class ProfileViewModel(
         onEvent(event)
     }
 
-    private fun getProfile() {
+
+    fun getProfile() {
         viewModelScope.launch {
             when (val response = getProfileUseCase()) {
 
@@ -216,7 +218,7 @@ class ProfileViewModel(
                 logout()
             }
 
-            is ProfileEvent.FormChange -> {}
+            else -> {}
         }
     }
 }

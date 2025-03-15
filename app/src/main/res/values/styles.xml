@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomTimePickerDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorAccent">@color/secondaryButton</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomPositiveButtonStyle</item>
+    </style>
+
+    <style name="CustomPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/secondaryButton</item>
+    </style>
+
+    <style name="CustomNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="android:textColor">@color/secondaryButton</item>
+    </style>
+</resources>

@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.tsunotintime.domain.entity.RequestModel
+import com.example.tsunotintime.data.models.RequestStatus
 import com.example.tsunotintime.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
@@ -36,8 +38,8 @@ fun NavigationScreen(
                 },
                 toRegistration = { navController.navigate(Route.RegistrationScreen.route) },
                 onSuccess = {
-                    navController.navigate(Route.ProfileScreen.route) {
-                        popUpTo(Route.ProfileScreen.route) { inclusive = false }
+                    navController.navigate(Route.RequestScreen.route) {
+                        popUpTo(Route.WelcomeScreen.route) { inclusive = true }
                     }
                 })
         }
@@ -53,17 +55,35 @@ fun NavigationScreen(
                 },
                 toLogin = { navController.navigate(Route.LoginScreen.route) },
                 onSuccess = {
-                    navController.navigate(Route.ProfileScreen.route) {
-                        popUpTo(Route.ProfileScreen.route) { inclusive = false }
+                    navController.navigate(Route.RequestScreen.route) {
+                        navController.navigate(Route.RequestScreen.route) {
+                            popUpTo(Route.WelcomeScreen.route) { inclusive = true }
+                        }
                     }
                 })
         }
         composable(Route.ProfileScreen.route) {
-            ProfileScreen(koinViewModel(), back = { navController.navigateUp() }, logoutAction = {
+            ProfileScreen(koinViewModel(), back = {
+                navController.navigate(Route.RequestScreen.route) {
+                    popUpTo(Route.WelcomeScreen.route) { inclusive = true }
+                }
+            }, logoutAction = {
                 navController.navigate(Route.WelcomeScreen.route) {
                     popUpTo(Route.WelcomeScreen.route) { inclusive = true }
                 }
             })
+        }
+        composable(Route.RequestScreen.route) {
+            RequestScreen(
+                koinViewModel(),
+                toProfile = {
+                    navController.navigate(Route.ProfileScreen.route) {
+                        launchSingleTop
+                    }
+                })
+        }
+        composable(Route.RequestAdd.route) {
+            AddRequestScreen()
         }
     }
 }
