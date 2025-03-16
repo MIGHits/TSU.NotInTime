@@ -1,21 +1,23 @@
 package com.example.tsunotintime.data.remote.interceptor
 
-import android.util.Log
 import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.example.tsunotintime.data.models.RefreshTokenRequestModel
 import com.example.tsunotintime.data.remote.UserService
-import com.example.tsunotintime.data.storage.PrivateTokenStorage
+import com.example.tsunotintime.data.storage.TokenStorage
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-class AuthInterceptor(private val userService: Lazy<UserService>) : Interceptor {
+class AuthInterceptor(
+    private val userService: Lazy<UserService>,
+    private val tokenStorage: TokenStorage
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val accessToken = PrivateTokenStorage.getAccessToken()
+        val accessToken = tokenStorage.getAccessToken()
 
         if (accessToken.isEmpty()) {
             return chain.proceed(request)
@@ -38,8 +40,8 @@ class AuthInterceptor(private val userService: Lazy<UserService>) : Interceptor 
 
     private fun refreshTokenAndRetry(request: Request, chain: Interceptor.Chain): Response {
         return runBlocking {
-            val refreshToken = PrivateTokenStorage.getRefreshToken()
-            val accessToken = PrivateTokenStorage.getAccessToken()
+            val refreshToken = tokenStorage.getRefreshToken()
+            val accessToken = tokenStorage.getAccessToken()
 
             val decodedJWT: DecodedJWT = JWT.decode(accessToken)
             val userId = decodedJWT.getClaim("user_id").asString()
@@ -57,8 +59,8 @@ class AuthInterceptor(private val userService: Lazy<UserService>) : Interceptor 
                 val newRefreshToken = refreshResponse.body()?.refreshToken
                 if (!newAccessToken.isNullOrEmpty()) {
 
-                    PrivateTokenStorage.saveAccessToken(newAccessToken)
-                    newRefreshToken?.let { PrivateTokenStorage.saveRefreshToken(it) }
+                    tokenStorage.saveAccessToken(newAccessToken)
+                    newRefreshToken?.let { tokenStorage.saveRefreshToken(it) }
 
                     return@runBlocking chain.proceed(
                         request.newBuilder()

@@ -1,15 +1,8 @@
 package com.example.tsunotintime.presentation.components
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.view.ContextThemeWrapper
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,23 +46,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.tsunotintime.R
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.URL.IMAGE_URL
 import com.example.tsunotintime.data.models.RequestStatus
-import com.example.tsunotintime.domain.entity.RequestModel
 import com.example.tsunotintime.presentation.state.RequestDetailsState
 import com.example.tsunotintime.ui.theme.Nunito
 import com.example.tsunotintime.ui.theme.PrimaryColor
 import com.example.tsunotintime.ui.theme.SecondaryButton
 import com.example.tsunotintime.utils.DateTimeParser.formatIsoDateToDisplay
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import com.example.tsunotintime.utils.DateValidator
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -91,32 +78,6 @@ fun FullRequestCard(
     var localRequestState by remember { mutableStateOf(requestState) }
     var newImages by remember { mutableStateOf(listOf<Uri>()) }
 
-    fun validateDateTime(): Boolean {
-        return try {
-            val startDate =
-                formatIsoDateToDisplay(
-                    localRequestState.requestModel?.absenceDateFrom ?: EMPTY_RESULT
-                )
-            val endDate = formatIsoDateToDisplay(
-                localRequestState.requestModel?.absenceDateTo ?: EMPTY_RESULT
-            )
-
-            if (startDate > endDate) {
-                localRequestState =
-                    localRequestState.copy(errorMessage = context.getString(R.string.earlierDateError))
-                false
-            } else {
-                localRequestState =
-                    localRequestState.copy(errorMessage = EMPTY_RESULT)
-                true
-            }
-        } catch (e: Exception) {
-            localRequestState =
-                localRequestState.copy(errorMessage = context.getString(R.string.date_error))
-            false
-        }
-    }
-
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -132,15 +93,17 @@ fun FullRequestCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 localRequestState.requestModel?.status?.let { StatusBadge(it) }
-                IconButton(onClick = {
-                    localRequestState =
-                        localRequestState.copy(isEditing = !localRequestState.isEditing)
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.edit_icon),
-                        tint = SecondaryButton,
-                        contentDescription = null
-                    )
+                if (localRequestState.requestModel?.status == RequestStatus.Checking) {
+                    IconButton(onClick = {
+                        localRequestState =
+                            localRequestState.copy(isEditing = !localRequestState.isEditing)
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.edit_icon),
+                            tint = SecondaryButton,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 
@@ -225,6 +188,7 @@ fun FullRequestCard(
                         focusedBorderColor = SecondaryButton,
                         unfocusedLabelColor = SecondaryButton,
                         unfocusedBorderColor = SecondaryButton,
+                        focusedLabelColor = SecondaryButton
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
@@ -341,7 +305,12 @@ fun FullRequestCard(
             if (localRequestState.isEditing) {
                 Button(
                     onClick = {
-                        if (validateDateTime()) {
+                        val validationResult = DateValidator.validateDateTime(
+                            localRequestState.requestModel?.absenceDateFrom ?: EMPTY_RESULT,
+                            localRequestState.requestModel?.absenceDateTo ?: EMPTY_RESULT,
+                            context
+                        )
+                        if (validationResult.result) {
                             onSave(
                                 localRequestState.requestModel?.id ?: EMPTY_RESULT,
                                 localRequestState.requestModel?.status ?: RequestStatus.Checking,
@@ -351,6 +320,11 @@ fun FullRequestCard(
                                 localRequestState.requestModel?.absenceDateTo ?: EMPTY_RESULT,
                                 newImages
                             )
+                        } else {
+                            localRequestState =
+                                localRequestState.copy(
+                                    errorMessage = validationResult.errorMessage ?: EMPTY_RESULT
+                                )
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

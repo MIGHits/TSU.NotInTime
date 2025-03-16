@@ -9,14 +9,12 @@ import retrofit2.Response
 object ErrorParser {
     fun parseErrorMessage(response: Response<*>): String {
         return try {
-            val errorBody = response.errorBody()?.string()
-            if (!errorBody.isNullOrEmpty()) {
-                val gson = Gson()
-                val errorResponse = gson.fromJson(errorBody, ResponseModel::class.java)
-                errorResponse.message.toString()
-            } else {
-                instance.getString(R.string.unknown_error)
-            }
+            val errorBody = response.errorBody()?.string() ?: return instance.getString(R.string.unknown_error)
+
+            val gson = Gson()
+            val errorResponse = gson.fromJson(errorBody, ResponseModel::class.java)
+
+            errorResponse.message ?: instance.getString(R.string.unknown_error)
         } catch (e: Exception) {
             instance.getString(R.string.error_fetch_failed)
         }

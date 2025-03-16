@@ -15,7 +15,7 @@ interface RequestRepository {
         absenceDateFrom: String,
         absenceDateTo: String,
         description: String,
-        files: List<String>
+        files: List<Uri>
     ): String?
 
     suspend fun editRequest(

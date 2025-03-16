@@ -16,6 +16,11 @@ object Constant {
     const val UNVERIFIED = "Статус не подтвержден"
     const val ADMIN = "Администратор"
 
-    const val NETWORK_ERROR  = "Проверьте соединение с сетью"
+    const val NETWORK_ERROR = "Проверьте соединение с сетью"
     const val CONNECTION_ERROR = "Не удалось установить соединение"
+
+    const val GOOD_NIGHT = "Доброй ночи"
+    const val GOOD_DAY = "Добрый день"
+    const val GOOD_MORNING = "Доброе утро"
+    const val GOOD_EVENING = "Добрый вечер"
 }

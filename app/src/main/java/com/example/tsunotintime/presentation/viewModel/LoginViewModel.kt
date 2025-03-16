@@ -1,7 +1,5 @@
 package com.example.tsunotintime.presentation.viewModel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
@@ -145,6 +143,8 @@ class LoginViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+
+                        is ErrorEntity.NonAuthorized -> {}
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))

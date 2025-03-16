@@ -1,9 +1,11 @@
 package com.example.tsunotintime.di
 
+import com.example.tsunotintime.domain.usecase.AddRequestUseCase
 import com.example.tsunotintime.domain.usecase.ConfirmPasswordUseCase
 import com.example.tsunotintime.domain.usecase.GetProfileUseCase
 import com.example.tsunotintime.domain.usecase.GetRequestUseCase
 import com.example.tsunotintime.domain.usecase.GetUserRequestsUseCase
+import com.example.tsunotintime.domain.usecase.IsUserAuthorizedUseCase
 import com.example.tsunotintime.domain.usecase.LoginUseCase
 import com.example.tsunotintime.domain.usecase.LogoutUseCase
 import com.example.tsunotintime.domain.usecase.RegisterUseCase
@@ -40,4 +42,6 @@ val domainModule = module {
         )
     }
     factory<RequestEditUseCase> { RequestEditUseCase(repository = get(), errorHandler = get()) }
+    factory<AddRequestUseCase> { AddRequestUseCase(repository = get(), errorHandler = get()) }
+    factory<IsUserAuthorizedUseCase> { IsUserAuthorizedUseCase(repository = get()) }
 }

@@ -20,6 +20,7 @@ class ErrorHandlerImpl : ErrorHandler {
                 when (throwable.code()) {
                     HttpURLConnection.HTTP_BAD_REQUEST -> ErrorEntity.BadRequest(throwable.cause?.message)
                     HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> ErrorEntity.Network(throwable.cause?.message)
+                    HttpURLConnection.HTTP_UNAUTHORIZED -> ErrorEntity.NonAuthorized(throwable.cause?.message)
                     HttpURLConnection.HTTP_NOT_FOUND -> ErrorEntity.NotFound(throwable.cause?.message)
                     HttpURLConnection.HTTP_UNAVAILABLE -> ErrorEntity.ServiceUnavailable(throwable.cause?.message)
                     HttpURLConnection.HTTP_FORBIDDEN -> ErrorEntity.AccessDenied(throwable.cause?.message)

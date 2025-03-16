@@ -50,6 +50,7 @@ import com.example.tsunotintime.presentation.components.RequestCard
 import com.example.tsunotintime.presentation.state.BadgeState
 import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.RequestDetailsState
+import com.example.tsunotintime.presentation.viewModel.AuthViewModel
 import com.example.tsunotintime.presentation.viewModel.RequestViewModel
 import com.example.tsunotintime.ui.theme.Nunito
 import com.example.tsunotintime.ui.theme.PrimaryColor
@@ -62,10 +63,18 @@ import com.example.tsunotintime.ui.theme.exitButtonIconTint
 import com.example.tsunotintime.ui.theme.pendingBadgeBackground
 import com.example.tsunotintime.ui.theme.pendingBadgeTextTint
 import com.example.tsunotintime.utils.DateTimeParser.formatIsoDateToDisplay
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 @Composable
-fun RequestScreen(viewModel: RequestViewModel, toProfile: () -> Unit) {
+fun RequestScreen(
+    viewModel: RequestViewModel, toProfile: () -> Unit, toAddScreen: () -> Unit,
+    authViewModel: AuthViewModel,
+    toLogin: () -> Unit
+) {
+    val tokenState = authViewModel.tokenState.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val screenState by viewModel.screenState.collectAsState()
     val requestState by viewModel.requestState.collectAsState()
 
@@ -73,22 +82,35 @@ fun RequestScreen(viewModel: RequestViewModel, toProfile: () -> Unit) {
         is FetchDataState.Success -> {
             val requests = requestState.requests ?: emptyList()
             viewModel.updateBadges(requests)
-
-            RequestListScreen(
-                requestList = requests,
-                onSelect = { requestId -> viewModel.getDetails(requestId) },
-                requestState = requestState.requestDetails,
-                badgeState = requestState.badgeState,
-                toProfile = toProfile,
-                viewModel = viewModel
-            )
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = { viewModel.getRequests() }
+            ) {
+                RequestListScreen(
+                    requestList = requests,
+                    onSelect = { requestId -> viewModel.getDetails(requestId) },
+                    requestState = requestState.requestDetails,
+                    badgeState = requestState.badgeState,
+                    toProfile = toProfile,
+                    viewModel = viewModel,
+                    toAddScreen = toAddScreen
+                )
+            }
         }
 
         is FetchDataState.Loading -> LoadingIndicator()
         is FetchDataState.Error -> ErrorComponent(
             message = (screenState.currentState as FetchDataState.Error).message,
-            onRetry = { viewModel.getRequests() },
-            onDismiss = {}
+            onRetry = {
+                if (tokenState.value) viewModel.getRequests() else {
+                    toLogin()
+                }
+            },
+            onDismiss = {
+                if (tokenState.value){} else {
+                    toLogin()
+                }
+            }
         )
 
         FetchDataState.Initial -> {
@@ -104,7 +126,8 @@ fun RequestListScreen(
     requestState: RequestDetailsState,
     viewModel: RequestViewModel,
     badgeState: BadgeState,
-    toProfile: () -> Unit
+    toProfile: () -> Unit,
+    toAddScreen: () -> Unit
 ) {
     var selectItem by remember { mutableStateOf<RequestShortModel?>(null) }
     selectItem?.let {
@@ -223,7 +246,7 @@ fun RequestListScreen(
                         containerColor = exitButtonBackground,
                         borderColor = exitButtonIconTint,
                         cardType = stringResource(R.string.rejected),
-                        amount = badgeState.confirmed
+                        amount = badgeState.rejected
                     )
                 }
             }
@@ -256,7 +279,7 @@ fun RequestListScreen(
             }
         }
         FloatingActionButton(
-            onClick = { },
+            onClick = { toAddScreen() },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 32.dp, bottom = 60.dp),

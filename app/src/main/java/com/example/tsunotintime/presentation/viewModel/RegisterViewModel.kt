@@ -130,6 +130,7 @@ class RegisterViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+                        is ErrorEntity.NonAuthorized -> {}
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))

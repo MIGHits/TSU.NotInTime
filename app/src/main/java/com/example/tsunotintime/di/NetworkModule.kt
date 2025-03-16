@@ -19,7 +19,7 @@ val networkModule = module {
     }
 
     single { lazy { get<Retrofit>().create(UserService::class.java) } }
-    single { AuthInterceptor(get()) }
+    single { AuthInterceptor(get(), get()) }
     single {
         MyClient.getUnsafeOkHttpClient(get())
     }

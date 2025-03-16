@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
+import com.example.tsunotintime.common.Constant.GOOD_DAY
+import com.example.tsunotintime.common.Constant.GOOD_EVENING
+import com.example.tsunotintime.common.Constant.GOOD_MORNING
+import com.example.tsunotintime.common.Constant.GOOD_NIGHT
 import com.example.tsunotintime.presentation.components.AuthButton
 import com.example.tsunotintime.presentation.components.CustomInputField
 import com.example.tsunotintime.presentation.components.ErrorComponent
@@ -49,6 +54,7 @@ import com.example.tsunotintime.presentation.components.ProfileField
 import com.example.tsunotintime.presentation.state.FetchDataState
 import com.example.tsunotintime.presentation.state.ProfileEvent
 import com.example.tsunotintime.presentation.state.ProfileState
+import com.example.tsunotintime.presentation.viewModel.AuthViewModel
 import com.example.tsunotintime.presentation.viewModel.ProfileViewModel
 import com.example.tsunotintime.ui.theme.Nunito
 import com.example.tsunotintime.ui.theme.PrimaryButton
@@ -58,11 +64,17 @@ import com.example.tsunotintime.ui.theme.SecondaryColor
 import com.example.tsunotintime.ui.theme.exitButtonBackground
 import com.example.tsunotintime.ui.theme.exitButtonIconTint
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel, back: () -> Unit, logoutAction: () -> Unit) {
+fun ProfileScreen(
+    viewModel: ProfileViewModel, back: () -> Unit, logoutAction: () -> Unit,
+    authViewModel: AuthViewModel
+) {
     val screenState = viewModel.screenState.value.currentState
     val profileState = viewModel.profileState.value
+    val tokenState = authViewModel.tokenState.collectAsState()
 
     when (screenState) {
         is FetchDataState.Success -> ProfileForm(
@@ -78,7 +90,16 @@ fun ProfileScreen(viewModel: ProfileViewModel, back: () -> Unit, logoutAction: (
         is FetchDataState.Loading -> LoadingIndicator()
         is FetchDataState.Error -> ErrorComponent(
             message = screenState.message,
-            { viewModel.getProfile() }, {})
+            onRetry = {
+                if (tokenState.value) viewModel.createEvent(ProfileEvent.Logout) else {
+                    logoutAction()
+                }
+            },
+            onDismiss = {
+                if (tokenState.value) viewModel.getProfile() else {
+                    logoutAction()
+                }
+            })
 
         FetchDataState.Initial -> {}
     }
@@ -162,7 +183,18 @@ fun ProfileForm(
                                 fontWeight = FontWeight.Medium
                             )
                         ) {
-                            append("Добрый вечер,\n")
+                            val currentTime = LocalDateTime.now().toLocalTime()
+                            append(
+                                "${
+                                    when {
+                                        currentTime.isBefore(LocalTime.of(6, 0)) -> GOOD_NIGHT
+                                        currentTime.isBefore(LocalTime.of(12, 0)) -> GOOD_MORNING
+                                        currentTime.isBefore(LocalTime.of(18, 0)) -> GOOD_DAY
+                                        currentTime.isBefore(LocalTime.of(23, 59)) -> GOOD_EVENING
+                                        else -> GOOD_NIGHT
+                                    }
+                                },\n"
+                            )
                         }
                         withStyle(
                             style = SpanStyle(
@@ -172,7 +204,7 @@ fun ProfileForm(
                                 fontWeight = FontWeight.Black
                             )
                         ) {
-                            append("Пользователь")
+                            append(profileState.name)
                         }
                     }
                 )

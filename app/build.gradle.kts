@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.swiperefresh)
     implementation(libs.compose)
     implementation (libs.glide)
     implementation(libs.coil.compose)
