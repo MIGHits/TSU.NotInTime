@@ -13,8 +13,9 @@ import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.Constant.NETWORK_ERROR
 import com.example.tsunotintime.common.Constant.STUDENT
 import com.example.tsunotintime.common.Constant.TEACHER
-import com.example.tsunotintime.common.Constant.UNVERIFIED
+import com.example.tsunotintime.common.Constant.UNAUTHORIZED_ERROR
 import com.example.tsunotintime.data.models.UserType
+import com.example.tsunotintime.data.storage.TokenStorage
 import com.example.tsunotintime.domain.entity.ErrorEntity
 import com.example.tsunotintime.domain.entity.Result
 import com.example.tsunotintime.domain.usecase.GetProfileUseCase
@@ -32,7 +33,8 @@ class ProfileViewModel(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val updatePasswordUseCase: UpdateUserPasswordUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val tokenStorage: TokenStorage
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf(ScreenState(currentState = FetchDataState.Initial))
@@ -57,20 +59,22 @@ class ProfileViewModel(
 
                 is Result.Success -> {
                     val data = response.data
+
+                    val roles = data?.userTypes?.joinToString(", ") {
+                        when (it) {
+                            UserType.Student -> STUDENT
+                            UserType.Dean -> DEAN
+                            UserType.Admin -> ADMIN
+                            UserType.Teacher -> TEACHER
+                        }
+                    }
                     _profileState.value =
                         _profileState.value.copy(
                             name = data?.firstName ?: EMPTY_RESULT,
                             lastName = data?.lastName ?: EMPTY_RESULT,
                             middleName = data?.middleName ?: EMPTY_RESULT,
                             email = data?.email ?: EMPTY_RESULT,
-                            status = when (data?.userType) {
-                                UserType.Student -> STUDENT
-                                UserType.Dean -> DEAN
-                                UserType.Admin -> ADMIN
-                                UserType.Unverified -> UNVERIFIED
-                                UserType.Teacher -> TEACHER
-                                null -> UNVERIFIED
-                            }
+                            status = roles ?: EMPTY_RESULT
                         )
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Success)
@@ -98,6 +102,7 @@ class ProfileViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
@@ -113,7 +118,7 @@ class ProfileViewModel(
             when (val response = updatePasswordUseCase(_profileState.value.newPassword.text)) {
 
                 is Result.Success -> {
-                    Toast.makeText(instance, response.data?.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(instance, response.data?.Message, Toast.LENGTH_SHORT).show()
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Success)
                 }
@@ -140,6 +145,7 @@ class ProfileViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
@@ -179,6 +185,10 @@ class ProfileViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
+                        is ErrorEntity.NonAuthorized -> {
+                            errorMessage  = UNAUTHORIZED_ERROR
+                            tokenStorage.removeToken()
+                        }
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))

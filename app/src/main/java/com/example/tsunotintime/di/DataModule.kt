@@ -5,6 +5,8 @@ import com.example.tsunotintime.data.repository.AuthRepositoryImpl
 import com.example.tsunotintime.data.repository.ProfileRepositoryImpl
 import com.example.tsunotintime.data.repository.RequestRepositoryImpl
 import com.example.tsunotintime.data.repository.ValidationRepositoryImpl
+import com.example.tsunotintime.data.storage.PrivateTokenStorage
+import com.example.tsunotintime.data.storage.TokenStorage
 import com.example.tsunotintime.domain.error.ErrorHandler
 import com.example.tsunotintime.domain.repository.AuthRepository
 import com.example.tsunotintime.domain.repository.ProfileRepository
@@ -17,7 +19,7 @@ val dataModule = module {
         ValidationRepositoryImpl()
     }
     factory<AuthRepository> {
-        AuthRepositoryImpl(userService = get())
+        AuthRepositoryImpl(userService = get(), tokenStorage = get())
     }
     factory<ProfileRepository> {
         ProfileRepositoryImpl(userService = get())
@@ -27,5 +29,8 @@ val dataModule = module {
     }
     single<ErrorHandler> {
         ErrorHandlerImpl()
+    }
+    single<TokenStorage> {
+        PrivateTokenStorage()
     }
 }

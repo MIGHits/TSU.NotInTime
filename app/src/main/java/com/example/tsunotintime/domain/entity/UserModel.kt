@@ -8,5 +8,5 @@ data class UserModel(
     val middleName: String?,
     val lastName: String,
     val email: String,
-    val userType: UserType
+    val userTypes: List<UserType>
 )

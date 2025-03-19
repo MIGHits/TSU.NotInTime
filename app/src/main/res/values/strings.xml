@@ -51,4 +51,12 @@
     <string name="decline">Отмена</string>
     <string name="date_error">Ошибка при обработке дат.</string>
     <string name="earlierDateError">Дата начала не может быть позже даты окончания</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="error_fetch_failed">Не удалось извлечь сообщение об ошибке</string>
+    <string name="recent_request">Последние заявки</string>
+    <string name="new_request">Новая заявка</string>
+    <string name="add_new_request">Создать</string>
+    <string name="fill_form">Заполните форму</string>
+    <string name="isoSecondAccuracyFormat">yyyy-MM-dd\'T\'HH:mm:ss\'Z\'</string>
+    <string name="inputstream_fail_to_load">Не удалось открыть InputStream</string>
 </resources>

@@ -8,7 +8,7 @@ import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.Constant.PREFS_NAME
 import com.example.tsunotintime.common.Constant.REFRESH_TOKEN_KEY
 
-object PrivateTokenStorage : TokenStorage {
+class PrivateTokenStorage : TokenStorage {
     private val context = instance
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -32,5 +32,13 @@ object PrivateTokenStorage : TokenStorage {
 
     override fun removeToken() {
         editor.clear().apply()
+    }
+
+    override fun observeTokenState(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    override fun unregisterTokenState(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 }

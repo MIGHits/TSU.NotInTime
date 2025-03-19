@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseModel(
-    @SerialName("Status") val status: String?,
-    @SerialName("Message") val message: String?
+    @SerialName("Status") val Status: String?,
+    @SerialName("Message") val Message: String?
 )

@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,14 +28,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tsunotintime.R
 import com.example.tsunotintime.presentation.components.AuthButton
+import com.example.tsunotintime.presentation.viewModel.AuthViewModel
 import com.example.tsunotintime.ui.theme.Nunito
 import com.example.tsunotintime.ui.theme.PrimaryColor
 import com.example.tsunotintime.ui.theme.SecondaryColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun WelcomeScreen(toLogin: () -> Unit, toRegistration: () -> Unit) {
+fun WelcomeScreen(
+    toLogin: () -> Unit,
+    toRegistration: () -> Unit,
+    viewModel: AuthViewModel,
+    authorize: () -> Unit
+) {
     val systemUiController = rememberSystemUiController()
+    val tokenState = viewModel.tokenState.collectAsState()
 
     LaunchedEffect(systemUiController) {
         systemUiController.setStatusBarColor(
@@ -46,60 +54,63 @@ fun WelcomeScreen(toLogin: () -> Unit, toRegistration: () -> Unit) {
 
         )
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = SecondaryColor)
-    ) {
-        Column(
+    if (tokenState.value) {
+        authorize()
+    } else {
+        Box(
             modifier = Modifier
-                .padding(top = 200.dp)
-                .align(Alignment.TopCenter),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(color = SecondaryColor)
         ) {
-            Image(
-                painter = painterResource(R.drawable.welcome_stub),
-                null,
+            Column(
                 modifier = Modifier
-                    .wrapContentSize()
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.Center
+                    .padding(top = 200.dp)
+                    .align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.tsu_icon),
-                    null, tint = PrimaryColor,
+                Image(
+                    painter = painterResource(R.drawable.welcome_stub),
+                    null,
                     modifier = Modifier
                         .wrapContentSize()
-                        .align(Alignment.CenterVertically)
                 )
-                Spacer(modifier = Modifier.size(10.dp, 15.dp))
-                Text(
-                    text = stringResource(R.string.app_tittle),
-                    color = PrimaryColor,
-                    fontSize = 20.sp,
-                    lineHeight = 48.sp,
-                    fontFamily = Nunito,
-                    fontWeight = FontWeight.Black
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.tsu_icon),
+                        null, tint = PrimaryColor,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.CenterVertically)
+                    )
+                    Spacer(modifier = Modifier.size(10.dp, 15.dp))
+                    Text(
+                        text = stringResource(R.string.app_tittle),
+                        color = PrimaryColor,
+                        fontSize = 20.sp,
+                        lineHeight = 48.sp,
+                        fontFamily = Nunito,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+                Spacer(modifier = Modifier.height(30.dp))
+                AuthButton(
+                    stringResource(R.string.register),
+                    isEnabled = true,
+                    onClick = { toRegistration() }, modifier = Modifier.fillMaxWidth(0.7f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                AuthButton(
+                    stringResource(R.string.Enter),
+                    isEnabled = true,
+                    onClick = { toLogin() },
+                    modifier = Modifier.fillMaxWidth(0.7f)
                 )
             }
-            Spacer(modifier = Modifier.height(30.dp))
-            AuthButton(
-                stringResource(R.string.register),
-                isEnabled = true,
-                onClick = { toRegistration() }, modifier = Modifier.fillMaxWidth(0.7f)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            AuthButton(
-                stringResource(R.string.Enter),
-                isEnabled = true,
-                onClick = { toLogin() },
-                modifier = Modifier.fillMaxWidth(0.7f)
-            )
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.tsunotintime.data.storage
 
-import com.google.gson.stream.JsonToken
+import android.content.SharedPreferences
 
 interface TokenStorage {
     fun getAccessToken(): String
@@ -8,4 +8,6 @@ interface TokenStorage {
     fun getRefreshToken(): String
     fun saveRefreshToken(token: String)
     fun removeToken()
+    fun observeTokenState(listener: SharedPreferences.OnSharedPreferenceChangeListener)
+    fun unregisterTokenState(listener: SharedPreferences.OnSharedPreferenceChangeListener)
 }

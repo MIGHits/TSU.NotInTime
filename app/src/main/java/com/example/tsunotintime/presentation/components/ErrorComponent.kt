@@ -18,7 +18,12 @@ import com.example.tsunotintime.ui.theme.PrimaryColor
 import com.example.tsunotintime.ui.theme.SecondaryButton
 
 @Composable
-fun ErrorComponent(message: String, onRetry: () -> Unit, onDismiss: () -> Unit) {
+fun ErrorComponent(
+    message: String,
+    onRetry: () -> Unit,
+    onDismiss: () -> Unit,
+    reLogin: () -> Unit = {}
+) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = {

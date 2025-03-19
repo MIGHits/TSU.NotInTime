@@ -12,4 +12,7 @@ object URL {
     const val REFRESH_URL = "user/refresh-token"
     const val LOGOUT_URL = "user/logout"
     const val PROFILE_URL = "user/profile"
+
+    //const val IMAGE_URL =  "http://88.204.10.182:5693/"
+    //"http:/10.0.2.2:5693/api/"
 }

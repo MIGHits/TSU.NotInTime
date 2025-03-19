@@ -7,4 +7,5 @@ interface AuthRepository {
     suspend fun register(credentials: UserRegisterModel)
     suspend fun login(credentials: LoginCredentialsModel)
     suspend fun logout()
+    fun isUserLogged(): Boolean
 }

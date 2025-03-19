@@ -1,5 +1,7 @@
 package com.example.tsunotintime.di
 
+import com.example.tsunotintime.presentation.viewModel.AddRequestViewModel
+import com.example.tsunotintime.presentation.viewModel.AuthViewModel
 import com.example.tsunotintime.presentation.viewModel.LoginViewModel
 import com.example.tsunotintime.presentation.viewModel.ProfileViewModel
 import com.example.tsunotintime.presentation.viewModel.RegisterViewModel
@@ -29,14 +31,25 @@ val appModule = module {
             validatePasswordUseCase = get(),
             getProfileUseCase = get(),
             updatePasswordUseCase = get(),
-            logoutUseCase = get()
+            logoutUseCase = get(),
+            tokenStorage = get()
         )
     }
     viewModel<RequestViewModel> {
         RequestViewModel(
-            getRequestUseCase = get(),
             getUserRequestsUseCase = get(),
-            imageLoader = get()
+            getRequestUseCase = get(),
+            requestEditUseCase = get(),
+            tokenStorage = get()
+        )
+    }
+    viewModel<AddRequestViewModel> {
+        AddRequestViewModel(addRequestUseCase = get(), tokenStorage = get())
+    }
+    viewModel<AuthViewModel> {
+        AuthViewModel(
+            isUserAuthorizedUseCase = get(),
+            tokenStorage = get()
         )
     }
 }

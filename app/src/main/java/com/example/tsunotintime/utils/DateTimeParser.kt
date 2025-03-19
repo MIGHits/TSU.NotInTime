@@ -14,7 +14,7 @@ object DateTimeParser {
         )
 
         val displayFormatter = SimpleDateFormat("dd.MM.yyyy | HH:mm", Locale.getDefault()).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
+            timeZone = TimeZone.getDefault()
         }
 
         for (format in possibleFormats) {
