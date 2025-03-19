@@ -65,6 +65,8 @@ import com.example.tsunotintime.ui.theme.pendingBadgeTextTint
 import com.example.tsunotintime.utils.DateTimeParser.formatIsoDateToDisplay
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.time.delay
 
 
 @Composable
@@ -107,7 +109,8 @@ fun RequestScreen(
                 }
             },
             onDismiss = {
-                if (tokenState.value){} else {
+                if (tokenState.value) {
+                } else {
                     toLogin()
                 }
             }
@@ -153,7 +156,7 @@ fun RequestListScreen(
                                     absenceDateTo = absenceDateTo,
                                     newImages = newImages
                                 )
-                                selectItem = null
+                                viewModel.getDetails(requestId)
                             }
                         )
                     }

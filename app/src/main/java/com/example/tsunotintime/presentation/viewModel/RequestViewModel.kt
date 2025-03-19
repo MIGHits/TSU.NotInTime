@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT
 import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.Constant.NETWORK_ERROR
+import com.example.tsunotintime.common.Constant.UNAUTHORIZED_ERROR
 import com.example.tsunotintime.data.models.RequestShortModel
 import com.example.tsunotintime.data.models.RequestStatus
 import com.example.tsunotintime.data.storage.TokenStorage
@@ -89,7 +90,10 @@ class RequestViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
-                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
+                        is ErrorEntity.NonAuthorized -> {
+                            errorMessage  = UNAUTHORIZED_ERROR
+                            tokenStorage.removeToken()
+                        }
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))
@@ -133,7 +137,10 @@ class RequestViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
-                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
+                        is ErrorEntity.NonAuthorized -> {
+                            errorMessage  = UNAUTHORIZED_ERROR
+                            tokenStorage.removeToken()
+                        }
                     }
                     _cardDialogState.value =
                         _cardDialogState.value.copy(currentState = FetchDataState.Error(errorMessage))
@@ -203,7 +210,10 @@ class RequestViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
-                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
+                        is ErrorEntity.NonAuthorized -> {
+                            errorMessage  = UNAUTHORIZED_ERROR
+                            tokenStorage.removeToken()
+                        }
                     }
                     _cardDialogState.value =
                         _cardDialogState.value.copy(currentState = FetchDataState.Error(errorMessage))

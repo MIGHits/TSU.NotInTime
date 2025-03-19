@@ -167,11 +167,13 @@ fun FullRequestCard(
                 )
             )
             HorizontalDivider(color = Color.LightGray, modifier = Modifier.height(2.dp))
-            InfoColumn(
-                stringResource(R.string.checked_by),
-                localRequestState.requestModel?.checkerUsername ?: EMPTY_RESULT
-            )
-            HorizontalDivider(color = Color.LightGray, modifier = Modifier.height(2.dp))
+            if (localRequestState.requestModel?.checkerUsername?.isNotEmpty() == true) {
+                InfoColumn(
+                    stringResource(R.string.checked_by),
+                    localRequestState.requestModel?.checkerUsername ?: EMPTY_RESULT
+                )
+                HorizontalDivider(color = Color.LightGray, modifier = Modifier.height(2.dp))
+            }
 
             if (localRequestState.isEditing) {
                 OutlinedTextField(

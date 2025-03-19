@@ -11,12 +11,10 @@ import com.example.tsunotintime.domain.entity.RequestListModel
 import com.example.tsunotintime.domain.entity.RequestModel
 import com.example.tsunotintime.domain.repository.RequestRepository
 import com.example.tsunotintime.utils.ErrorParser.parseErrorMessage
-import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException

@@ -18,6 +18,7 @@ object Constant {
 
     const val NETWORK_ERROR = "Проверьте соединение с сетью"
     const val CONNECTION_ERROR = "Не удалось установить соединение"
+    const val UNAUTHORIZED_ERROR = "Ваша сессия закончилась"
 
     const val GOOD_NIGHT = "Доброй ночи"
     const val GOOD_DAY = "Добрый день"

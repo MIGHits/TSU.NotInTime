@@ -33,7 +33,8 @@ fun DateTimePickerField(
     label: String,
     initialDateTime: String,
     onDateTimeSelected: (String) -> Unit,
-    minDateTime: String? = null) {
+    minDateTime: String? = null
+) {
     val context = LocalContext.current
     val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("UTC")
@@ -52,7 +53,7 @@ fun DateTimePickerField(
             { _, year, month, day ->
                 Calendar.getInstance().apply { set(year, month, day) }
                 val timePickerDialog = TimePickerDialog(
-                    context,
+                    contextThemeWrapper,
                     { _, hour, minute ->
                         val selectedDateTime =
                             Calendar.getInstance().apply { set(year, month, day, hour, minute) }

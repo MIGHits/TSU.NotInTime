@@ -8,6 +8,7 @@ import com.example.tsunotintime.AppContext.Companion.instance
 import com.example.tsunotintime.common.Constant.CONNECTION_ERROR
 import com.example.tsunotintime.common.Constant.EMPTY_RESULT
 import com.example.tsunotintime.common.Constant.NETWORK_ERROR
+import com.example.tsunotintime.common.Constant.UNAUTHORIZED_ERROR
 import com.example.tsunotintime.data.storage.PrivateTokenStorage
 import com.example.tsunotintime.data.storage.TokenStorage
 import com.example.tsunotintime.domain.entity.ErrorEntity
@@ -101,7 +102,10 @@ class AddRequestViewModel(
                             response.error.errorMessage.toString()
 
                         is ErrorEntity.Connection -> errorMessage = NETWORK_ERROR
-                        is ErrorEntity.NonAuthorized -> tokenStorage.removeToken()
+                        is ErrorEntity.NonAuthorized -> {
+                            errorMessage  = UNAUTHORIZED_ERROR
+                            tokenStorage.removeToken()
+                        }
                     }
                     _screenState.value =
                         _screenState.value.copy(currentState = FetchDataState.Error(errorMessage))

@@ -14,7 +14,7 @@ object ErrorParser {
             val gson = Gson()
             val errorResponse = gson.fromJson(errorBody, ResponseModel::class.java)
 
-            errorResponse.message ?: instance.getString(R.string.unknown_error)
+            errorResponse.Message ?: instance.getString(R.string.unknown_error)
         } catch (e: Exception) {
             instance.getString(R.string.error_fetch_failed)
         }
